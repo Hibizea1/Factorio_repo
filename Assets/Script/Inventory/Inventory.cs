@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
@@ -120,6 +121,11 @@ public class Inventory : MonoBehaviour
             if (item.Data == data && item.Count >= count) return true;
         }
         return false;
+    }
+    
+    public void OpenAndCloseInventory(InputAction.CallbackContext context) 
+    {
+        inventoryPanel.SetActive(!inventoryPanel.activeSelf);
     }
 }
 
