@@ -110,3 +110,7 @@ MonoBehaviour:
   emptyHorizontalSprite: {fileID: 992981901, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
   emptyCornerSprite: {fileID: 0}
   spriteRenderer: {fileID: 8274309327393224700}
+  NextPosition: {x: 0, y: 0, z: 0}
+  PreviousPosition: {x: 0, y: 0, z: 0}
+  NextPositionNormalized: {x: 0, y: 0, z: 0}
+  PreviousPositionNormalized: {x: 0, y: 0, z: 0}
