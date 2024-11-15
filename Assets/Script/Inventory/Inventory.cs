@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,6 +14,20 @@ public class Inventory : MonoBehaviour
 
     const int inventorySize = 9;
     [SerializeField] GameObject content;
+
+    
+    public static Inventory SInstance { get; private set; }
+    private void Awake()
+    {
+        if (SInstance == null)
+        {
+            SInstance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
 
     private void Start()
     {

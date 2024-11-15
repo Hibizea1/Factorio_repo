@@ -39,8 +39,7 @@ public class FurnaceController : Controller
     {
         TimerSlider.maxValue = EndTimer1;
         HeatResistanceText.text = HeatResistance.ToString();
-        adjustedFurnaceSpeed = FurnaceSpeed * (1 + VolcanoController.Instance.CurrentVolcanoHeat1 / 100f);
-        HeatSpeedText.text = Mathf.Round(adjustedFurnaceSpeed).ToString();
+        HeatSpeedText.text = Mathf.Round(FurnaceSpeed).ToString();
     }
 
     private void Update()
@@ -117,23 +116,14 @@ public class FurnaceController : Controller
     {
         if (timer <= EndTimer)
         {
-            adjustedFurnaceSpeed = FurnaceSpeed * (1 + VolcanoController.Instance.CurrentVolcanoHeat1 / 100f);
-            HeatSpeedText.text = Mathf.Round(adjustedFurnaceSpeed).ToString();
-            timer += adjustedFurnaceSpeed * Time.deltaTime;
+            HeatSpeedText.text = Mathf.Round(FurnaceSpeed).ToString();
+            timer += FurnaceSpeed * Time.deltaTime;
             TimerSlider.value = timer;
         }
         else
         {
-            Result = SelectedCraft.Item2;
-            ResultSlot.Data = Result;
-            ResultSlot.Count += 1;
+            ResultSlot.SetItem(Result, 1);
             IngredientSlot.Count -= 1;
-            if (Result != null)
-            {
-                ResultSlot.transform.GetChild(1).GetComponent<Image>().sprite = Result.sprite;
-                ResultSlot.transform.GetChild(1).GetComponent<Image>().color = Color.white;
-            }
-
             Debug.Log("Crafted");
             timer = 0;
             TimerSlider.value = timer;

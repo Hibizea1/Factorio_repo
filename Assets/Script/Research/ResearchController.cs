@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,14 @@ using UnityEngine.UI;
 
 public class ResearchController : MonoBehaviour
 {
-    [SerializeField] private Inventory inventory;
+    private Inventory inventory;
     [SerializeField] private CraftingRule resultResearch;
     [SerializeField] List<DictionaryElements<ItemData, int>> requires;
+
+    private void Start()
+    {
+        inventory = Inventory.SInstance;
+    }
 
     public void Research()
     {

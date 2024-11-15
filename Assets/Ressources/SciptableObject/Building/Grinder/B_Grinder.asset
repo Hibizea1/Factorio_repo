@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 111
   description: Grinds different objects
-  nameItem: Grinder
-  sprite: {fileID: 0}
+  nameItem: Rock Crusher
+  sprite: {fileID: -1441717988, guid: 37a7a2531ec84c84aa3f9b3a260f1511, type: 3}
   Type: 0
   heatResistance: 0
-  prefab: {fileID: 0}
+  prefab: {fileID: 5811348058467533564, guid: a8e6949913279ca48aa1e3b128218a55, type: 3}
   Rarity: 10

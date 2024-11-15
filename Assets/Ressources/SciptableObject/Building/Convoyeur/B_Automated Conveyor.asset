@@ -15,8 +15,8 @@ MonoBehaviour:
   ID: 102
   description: Transfer Object. V2
   nameItem: Automated conveyor
-  sprite: {fileID: 0}
+  sprite: {fileID: 991192202, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
   Type: 0
   heatResistance: 0
-  prefab: {fileID: 0}
+  prefab: {fileID: 5922512252468952377, guid: 0248fe1b560d3dc4a882a61745d82475, type: 3}
   Rarity: 90

@@ -109,7 +109,8 @@ public class DefaultSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
     public virtual void SetItem(ItemData d, int i)
     {
         Data = d;
-        Count = i;
+        Count += i;
+        ChangeColorAndSprite();
     }
 
     public virtual void UseItem()

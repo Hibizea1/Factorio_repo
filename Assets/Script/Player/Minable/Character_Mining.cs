@@ -7,14 +7,15 @@ public class Character_Mining : MonoBehaviour
 {
     [SerializeField] private float miningSpeed;
     [SerializeField] private int range;
-    [SerializeField] private Inventory inventory;
     [SerializeField] private Slider Slider;
-    private bool isMining;
+    private Inventory inventory;
     private Coroutine mine;
+    private bool isMining;
 
     private void Start()
     {
         Slider.gameObject.SetActive(false);
+        inventory = Inventory.SInstance;
     }
 
     public void OnMiningPerformed(InputAction.CallbackContext context)

@@ -18,5 +18,5 @@ MonoBehaviour:
   sprite: {fileID: 0}
   Type: 0
   heatResistance: 0
-  prefab: {fileID: 0}
+  prefab: {fileID: 1212696727665052526, guid: e5ee1173881df2f4eb1a3981bea605bc, type: 3}
   Rarity: 30

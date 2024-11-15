@@ -8,7 +8,6 @@ public class Character_Build : MonoBehaviour
     [SerializeField] private Color ValidPlacementColor = new Color(0, 1, 0, 0.5f);
     [SerializeField] private Color InvalidPlacementColor = new Color(1, 0, 0, 0.5f);
     [SerializeField] private GameObject Canva;
-    [SerializeField] private Inventory Inventory;
 
     private Building buildingPrefab;
     private GameObject previewObject;
@@ -96,7 +95,7 @@ public class Character_Build : MonoBehaviour
 
     private void PlaceObject()
     {
-        Inventory.RemoveItem(buildingPrefab, 1);
+        Inventory.SInstance.RemoveItem(buildingPrefab, 1);
         Instantiate(buildingPrefab.prefab, GetMousePositionInWorld2D(), Quaternion.identity);
         VolcanoController.Instance.IncreaseVolcanoHeat(buildingPrefab.Rarity);
         Destroy(previewObject);

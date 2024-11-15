@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class SpawnRequireSlots : MonoBehaviour
 {
@@ -8,14 +7,21 @@ public class SpawnRequireSlots : MonoBehaviour
     private CraftingRule Craft;
 
     [SerializeField] private GameObject Slot;
-    [HideInInspector] public List <DefaultSlot> slots = new List <DefaultSlot> ();
+    public static List<DefaultSlot> slots = new List<DefaultSlot>();
 
     private CraftingController craftingController;
 
-    public CraftingController CraftingController { set { craftingController = value; } }
-    public CraftingRule RequireSlot1 { get { return Craft; } set { Craft = value; } }
+    public CraftingController CraftingController
+    {
+        set { craftingController = value; }
+    }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public CraftingRule RequireSlot1
+    {
+        get { return Craft; }
+        set { Craft = value; }
+    }
+
     void Start()
     {
         CraftingSlots = GetComponentInParent<SpawnSlotsCrafter>().SlotsUI;
@@ -23,13 +29,19 @@ public class SpawnRequireSlots : MonoBehaviour
 
     public void SpawnSlot()
     {
-        if (CraftingSlots.transform.childCount > 0) 
+        if (CraftingSlots.transform.childCount > 0)
         {
             for (int i = 0; i < CraftingSlots.transform.childCount; i++)
             {
-                slots.Clear ();
+                if (slots.Count > 0 && slots[i].Data != null)
+                {
+                    Inventory.SInstance.AddItem(slots[i].Data, slots[i].Count);
+                }
+
                 Destroy(CraftingSlots.transform.GetChild(i).gameObject);
             }
+
+            slots.Clear();
         }
 
         craftingController.SelectedCraft1 = Craft;
@@ -39,7 +51,7 @@ public class SpawnRequireSlots : MonoBehaviour
         {
             GameObject slot = Instantiate(Slot, CraftingSlots.transform);
             DefaultSlot defaultSlot = slot.GetComponent<DefaultSlot>();
-            slots.Add (defaultSlot);
+            slots.Add(defaultSlot);
             defaultSlot.ItemAccepted = Craft.requires[i];
             defaultSlot.AcceptAll = false;
             defaultSlot.IsHighlighted = true;
