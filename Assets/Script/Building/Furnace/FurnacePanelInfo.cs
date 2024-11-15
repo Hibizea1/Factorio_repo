@@ -4,16 +4,22 @@ using UnityEngine.UI;
 
 public class FurnacePanelInfo : MonoBehaviour
 {
-    [SerializeField] private DefaultSlot EntrySlot;
+    [SerializeField] private Slider TimerSlider;
+    [SerializeField] private TMP_Dropdown Dropdown;
+    [SerializeField] private DefaultSlot IngredientSlot;
     [SerializeField] private DefaultSlot ResultSlot;
-    [SerializeField] private Slider Slider;
-    [SerializeField] private TMP_Dropdown DropDown;
+    [SerializeField] private TextMeshProUGUI HeatResistanceText;
+    [SerializeField] private TextMeshProUGUI HeatSpeedText;
 
-    public TMP_Dropdown DropDown1 => DropDown;
+    public TMP_Dropdown DropDown1 => Dropdown;
 
-    public DefaultSlot EntrySlot1 => EntrySlot;
+    public DefaultSlot IngredientSlot1 => IngredientSlot;
 
     public DefaultSlot ResultSlot1 => ResultSlot;
 
-    public Slider Slider1 => Slider;
+    public Slider Slider1 => TimerSlider;
+
+    public TextMeshProUGUI HeatResistanceText1 => HeatResistanceText;
+
+    public TextMeshProUGUI HeatSpeedText1 => HeatSpeedText;
 }

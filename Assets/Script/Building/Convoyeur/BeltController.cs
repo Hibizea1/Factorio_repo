@@ -1,18 +1,24 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class BeltController : MonoBehaviour
 {
     [SerializeField] private float beltSpeed;
     [SerializeField] private GameObject waypointPrefab; // Un seul prefab pour tous les waypoints
-    [SerializeField] private LayerMask layerMask;
+    [SerializeField] private LayerMask LayerMask;
+
+    private ItemData transportedItem;
+    private int countItem;
 
     private List<PathNode> pathNodes = new();
     private HashSet<Vector3> occupiedPositions = new();
     private int currentNodeIndex = 0;
     private bool pathValidated = false;
     private bool isDrawingPath = false;
+    private bool isStopped = false;
 
     public static BeltController SelectedBelt { get; set; }
 
@@ -96,9 +102,17 @@ public class BeltController : MonoBehaviour
             RotateNodeAtPosition(GetMousePositionRounded());
         }
 
-        if (pathValidated && pathNodes.Count > 1)
+        MoveCart();
+    }
+
+    private void MoveCart()
+    {
+        if (!isStopped)
         {
-            MoveAlongPath();
+            if (pathValidated && pathNodes.Count > 1)
+            {
+                MoveAlongPath();
+            }
         }
     }
 
@@ -114,6 +128,7 @@ public class BeltController : MonoBehaviour
         {
             mousePosition.x++;
         }
+
         if (mousePosition.y % 2 != 0)
         {
             mousePosition.y++;
@@ -225,10 +240,45 @@ public class BeltController : MonoBehaviour
             else
             {
                 currentNodeIndex++;
+                CheckNodeType();
             }
         }
     }
 
+    private void CheckNodeType()
+    {
+        switch (pathNodes[currentNodeIndex].Type)
+        {
+            case PathType.Empty:
+                isStopped = true;
+                EmptyCart();
+                break;
+            case PathType.Fill:
+                isStopped = true;
+                FillCart();
+                break;
+            case PathType.Follow:
+                isStopped = false;
+                break;
+        }
+    }
+
+    private void FillCart()
+    {
+    }
+
+    private void EmptyCart()
+    {
+        Collider2D collider = Physics2D.OverlapCircle(transform.position, 1, LayerMask);
+
+        if (collider.TryGetComponent(out Controller c))
+        {
+            if (c.HasCraftSelected())
+            {
+                c.SetItemCountForMultiSlot(countItem, transportedItem);
+            }
+        }
+    }
 
     private bool IsPathClosed()
     {
