@@ -138,7 +138,7 @@ public class GemController : Controller
 
             for (int i = 0; i < craftedGems.Count; i++)
             {
-                ResultSlots[i].SetItem(craftedGems[i], 1);
+                ResultSlots[i].SetItemForCraft(craftedGems[i], 1);
             }
 
             craftedGems.Clear();

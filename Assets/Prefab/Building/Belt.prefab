@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 9172440661000833012}
   - component: {fileID: 2010166889676104082}
   - component: {fileID: 6649055303967912840}
+  - component: {fileID: -3401010676024170816}
   m_Layer: 7
   m_Name: Belt
   m_TagString: Build
@@ -191,11 +192,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5ee448a1c174394eb525aa494185378, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beltSpeed: 3
-  waypointPrefab: {fileID: 6848597723979576712, guid: d6c7ddbcdfe512942bf6eca4c8d6f566, type: 3}
-  layerMask:
+  BeltSpeed: 3
+  WaypointPrefab: {fileID: 6848597723979576712, guid: d6c7ddbcdfe512942bf6eca4c8d6f566, type: 3}
+  LayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
+  WaitingTime: 0
+  Wait: 5
+  CurrentNodeIndex: 0
 --- !u!114 &9172440661000833012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,3 +272,17 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-3401010676024170816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5922512252468952377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0153245aa8f108b4baf3758f128f1039, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Header: conveyor
+  Content: Transfer Item.

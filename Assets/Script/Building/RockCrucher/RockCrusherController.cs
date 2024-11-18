@@ -91,7 +91,7 @@ public class RockCrusherController : Controller
             // ResultSlot.Data = OutputItem;
             // ResultSlot.Count += 1;
             IngredientSlot.Count -= 1;
-            ResultSlot.SetItem(OutputItem, 1);
+            ResultSlot.SetItemForCraft(OutputItem, 1);
             // if (IngredientSlot.transform.childCount > 1)
             // {
             //     ResultSlot.transform.GetChild(1).GetComponent<Image>().sprite = OutputItem.sprite;

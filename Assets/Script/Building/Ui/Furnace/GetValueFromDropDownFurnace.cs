@@ -20,6 +20,11 @@ public class GetValueFromDropDownFurnace : MonoBehaviour
 
     private int dropDownIndex;
 
+    private void Awake()
+    {
+        FurnaceDataManager.SInstance.FurnaceCraftEvent += AddCraftToList;
+    }
+
     private void Start()
     {
         DropDown.onValueChanged.AddListener(ActionToCall);
@@ -31,6 +36,13 @@ public class GetValueFromDropDownFurnace : MonoBehaviour
         dropDownIndex = DropDown.value;
         string dropDownText = DropDown.options[dropDownIndex].text;
         Debug.Log(dropDownText);
+    }
+
+    private void AddCraftToList()
+    {
+        Debug.Log("Set Craft");
+        FurnaceCrafts = FurnaceDataManager.SInstance.Crafts;
+        AddNewCraft();
     }
 
     [ContextMenu("Add New Craft")]

@@ -296,5 +296,4 @@ MonoBehaviour:
   HeatResistance: 150
   FurnaceSpeed: 1
   EndTimer: 10
-  timer: 0
-  SelectedCraft: {fileID: 0}
+  selectedCraft: {fileID: 0}

@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: FC_CopperIngot
   m_EditorClassIdentifier: 
   Name: Copper Ingot
-  Item1: {fileID: 11400000, guid: 0ad28e65250c60f489045f2aa977c094, type: 2}
-  Item2: {fileID: 11400000, guid: fe2eb8311eba6a04bbb2c3c58ac6e707, type: 2}
+  InputItem: {fileID: 11400000, guid: 0ad28e65250c60f489045f2aa977c094, type: 2}
+  OutputItem: {fileID: 11400000, guid: fe2eb8311eba6a04bbb2c3c58ac6e707, type: 2}
+  RequiresHeat: 0

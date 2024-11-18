@@ -193,7 +193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   beltSpeed: 12
   waypointPrefab: {fileID: 6848597723979576712, guid: d6c7ddbcdfe512942bf6eca4c8d6f566, type: 3}
-  layerMask:
+  LayerMask:
     serializedVersion: 2
     m_Bits: 0
 --- !u!114 &9172440661000833012

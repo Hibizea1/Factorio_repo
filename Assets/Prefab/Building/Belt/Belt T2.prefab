@@ -191,11 +191,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5ee448a1c174394eb525aa494185378, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beltSpeed: 7
-  waypointPrefab: {fileID: 6848597723979576712, guid: d6c7ddbcdfe512942bf6eca4c8d6f566, type: 3}
-  layerMask:
+  BeltSpeed: 0
+  WaypointPrefab: {fileID: 0}
+  LayerMask:
     serializedVersion: 2
     m_Bits: 0
+  WaitingTime: 0
+  Wait: 5
+  CurrentNodeIndex: 0
 --- !u!114 &9172440661000833012
 MonoBehaviour:
   m_ObjectHideFlags: 0

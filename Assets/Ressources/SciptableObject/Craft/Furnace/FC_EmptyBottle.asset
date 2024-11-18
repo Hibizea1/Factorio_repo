@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FC_EmptyBottle
   m_EditorClassIdentifier: 
   Name: Empty Bottle
-  Item1: {fileID: 11400000, guid: 300ad6b9017ab7746b3ad4bc8f6b721e, type: 2}
-  Item2: {fileID: 11400000, guid: 7abe1958945189a4a9e859f634b42c0c, type: 2}
+  InputItem: {fileID: 11400000, guid: 300ad6b9017ab7746b3ad4bc8f6b721e, type: 2}
+  OutputItem: {fileID: 11400000, guid: 7abe1958945189a4a9e859f634b42c0c, type: 2}
   RequiresHeat: 0

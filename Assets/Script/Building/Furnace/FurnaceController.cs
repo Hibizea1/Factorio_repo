@@ -18,7 +18,7 @@ public class FurnaceController : Controller
     public float EndTimer1 => EndTimer;
 
     //Script
-    private FurnaceCraft selectedCraft;
+    [SerializeField] private FurnaceCraft selectedCraft;
     private BuildUi buildUi;
     private FurnacePanelInfo panelInfo;
 
@@ -63,20 +63,19 @@ public class FurnaceController : Controller
             resultSlot.Count--;
         }
 
-        return resultSlot.Data;
+        return resultSlot.GetItemFromSlot();
     }
 
     public override int GetItemCount()
     {
-        int count = resultSlot.Count;
+        int count = resultSlot.GetCountFromSlot();
         resultSlot.Count = 0;
         return count;
     }
 
     public override void SetItemCountForMultiSlot(int _count, ItemData _data)
     {
-        ingredientSlot.Data = _data;
-        ingredientSlot.Count += _count;
+        ingredientSlot.SetItemForCraft(_data, _count);
     }
 
     private void GetCraft()
@@ -85,6 +84,7 @@ public class FurnaceController : Controller
         if (selectedCraft != null)
         {
             ingredientSlot.ItemAccepted = selectedCraft.InputItem;
+            Debug.Log("Item Accepted : " + ingredientSlot.ItemAccepted);
         }
     }
 
@@ -103,19 +103,7 @@ public class FurnaceController : Controller
     private void FurnaceHeating()
     {
         if (selectedCraft == null || ingredientSlot.Count == 0) return;
-
-        if (VolcanoController.Instance.CurrentVolcanoHeat1 < selectedCraft.RequiresHeat) return;
-
-        if (VolcanoController.Instance.CurrentVolcanoHeat1 > HeatResistance)
-        {
-            float failChance = UnityEngine.Random.Range(0f, 1f);
-            if (failChance < 0.5f)
-            {
-                Debug.Log("Crafting failed due to high temperature.");
-                return;
-            }
-        }
-
+        
         if (ingredientSlot.Data == selectedCraft.InputItem)
         {
             if (timer <= EndTimer)
@@ -126,7 +114,7 @@ public class FurnaceController : Controller
             }
             else
             {
-                resultSlot.SetItem(selectedCraft.OutputItem, 1);
+                resultSlot.SetItemForCraft(selectedCraft.OutputItem, 1);
                 ingredientSlot.Count -= 1;
                 Debug.Log("Crafted");
                 timer = 0;

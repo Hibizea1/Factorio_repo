@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FC_IronIngot
   m_EditorClassIdentifier: 
   Name: Iron Ingot
-  Item1: {fileID: 11400000, guid: 66407d5cb60bc8a47ab501f309fc353c, type: 2}
-  Item2: {fileID: 11400000, guid: d186596fb9c9186419552fb863562c2e, type: 2}
-  RequiresHeat: 70
+  InputItem: {fileID: 11400000, guid: 66407d5cb60bc8a47ab501f309fc353c, type: 2}
+  OutputItem: {fileID: 11400000, guid: d186596fb9c9186419552fb863562c2e, type: 2}
+  RequiresHeat: 0

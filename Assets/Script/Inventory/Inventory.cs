@@ -77,8 +77,8 @@ public class Inventory : MonoBehaviour
 
             if (slot[0].Count <= 0)
             {
+                slot[0].SetItemForInventory(null, 0);
                 items.Remove(slot[0]);
-                slot[0].SetItem(null, 0);
             }
         }
 

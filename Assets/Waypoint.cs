@@ -1,46 +1,47 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Waypoint : MonoBehaviour
 {
-    [Header("Sprites pour chaque type de rail")] [SerializeField]
-    private Sprite fillVerticalSprite; // Sprite vertical pour le rail de type Fill
+    [Header("Sprites pour chaque type de rail")] 
+    [SerializeField] private Sprite FillVerticalSprite; // Sprite vertical pour le rail de type Fill
 
-    [SerializeField] private Sprite fillHorizontalSprite; // Sprite horizontal pour le rail de type Fill
-    [SerializeField] private Sprite fillCornerSprite; // Sprite de virage pour le rail de type Fill
+    [SerializeField] private Sprite FillHorizontalSprite; // Sprite horizontal pour le rail de type Fill
+    [SerializeField] private Sprite FillCornerSprite; // Sprite de virage pour le rail de type Fill
 
-    [SerializeField] private Sprite followVerticalSprite; // Sprite vertical pour le rail de type Follow
-    [SerializeField] private Sprite followHorizontalSprite; // Sprite horizontal pour le rail de type Follow
-    [SerializeField] private Sprite followCornerSprite; // Sprite de virage pour le rail de type Follow
+    [SerializeField] private Sprite FollowVerticalSprite; // Sprite vertical pour le rail de type Follow
+    [SerializeField] private Sprite FollowHorizontalSprite; // Sprite horizontal pour le rail de type Follow
+    [SerializeField] private Sprite FollowCornerSprite; // Sprite de virage pour le rail de type Follow
 
-    [SerializeField] private Sprite emptyVerticalSprite; // Sprite vertical pour le rail de type Empty
-    [SerializeField] private Sprite emptyHorizontalSprite; // Sprite horizontal pour le rail de type Empty
-    [SerializeField] private Sprite emptyCornerSprite; // Sprite de virage pour le rail de type Empty
+    [SerializeField] private Sprite EmptyVerticalSprite; // Sprite vertical pour le rail de type Empty
+    [SerializeField] private Sprite EmptyHorizontalSprite; // Sprite horizontal pour le rail de type Empty
+    [SerializeField] private Sprite EmptyCornerSprite; // Sprite de virage pour le rail de type Empty
 
-    [Header("SpriteRenderer")] [SerializeField]
-    private SpriteRenderer spriteRenderer; // Le SpriteRenderer du Waypoint
+    [Header("SpriteRenderer")] 
+    [SerializeField] private SpriteRenderer SpriteRenderer; // Le SpriteRenderer du Waypoint
 
-    public Vector3 NextPosition;
-    public Vector3 PreviousPosition;
-    public Vector3 NextPositionNormalized;
-    public Vector3 PreviousPositionNormalized;
+    private Vector3 nextPosition;
+    private Vector3 previousPosition;
+    private Vector3 nextPositionNormalized;
+    private Vector3 previousPositionNormalized;
 
     private BeltController.PathType currentPathType;
 
     private enum RailDirection
     {
-        Vertical,
-        Horizontal,
-        Corner
+        EVertical,
+        EHorizontal,
+        ECorner
     }
 
     private RailDirection currentDirection;
 
     private void Start()
     {
-        if (spriteRenderer == null)
-            spriteRenderer = GetComponent<SpriteRenderer>();
+        if (SpriteRenderer == null)
+            SpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
@@ -58,13 +59,13 @@ public class Waypoint : MonoBehaviour
         currentPathType = beltController.GetNodeType(transform.position);
         if (currentIndex == -1) return;
 
-        PreviousPosition =
+        previousPosition =
             currentIndex > 0 ? beltController.GetNodePosition(currentIndex - 1) : transform.position;
-        NextPosition = currentIndex < beltController.GetNodeCount() - 1
+        nextPosition = currentIndex < beltController.GetNodeCount() - 1
             ? beltController.GetNodePosition(currentIndex + 1)
             : transform.position;
 
-        SetOrientationAngle(PreviousPosition, NextPosition, currentPathType);
+        SetOrientationAngle(previousPosition, nextPosition, currentPathType);
     }
 
     private void UpdateSprite()
@@ -72,31 +73,31 @@ public class Waypoint : MonoBehaviour
         switch (currentPathType)
         {
             case BeltController.PathType.Fill:
-                spriteRenderer.sprite = currentDirection switch
+                SpriteRenderer.sprite = currentDirection switch
                 {
-                    RailDirection.Vertical => fillVerticalSprite,
-                    RailDirection.Horizontal => fillHorizontalSprite,
-                    RailDirection.Corner => fillCornerSprite,
-                    _ => fillHorizontalSprite
+                    RailDirection.EVertical => FillVerticalSprite,
+                    RailDirection.EHorizontal => FillHorizontalSprite,
+                    RailDirection.ECorner => FillCornerSprite,
+                    _ => FillHorizontalSprite
                 };
                 break;
 
             case BeltController.PathType.Follow:
-                spriteRenderer.sprite = currentDirection switch
+                SpriteRenderer.sprite = currentDirection switch
                 {
-                    RailDirection.Vertical => followVerticalSprite,
-                    RailDirection.Horizontal => followHorizontalSprite,
-                    RailDirection.Corner => followCornerSprite,
+                    RailDirection.EVertical => FollowVerticalSprite,
+                    RailDirection.EHorizontal => FollowHorizontalSprite,
+                    RailDirection.ECorner => FollowCornerSprite,
                 };
                 break;
 
             case BeltController.PathType.Empty:
-                spriteRenderer.sprite = currentDirection switch
+                SpriteRenderer.sprite = currentDirection switch
                 {
-                    RailDirection.Vertical => emptyVerticalSprite,
-                    RailDirection.Horizontal => emptyHorizontalSprite,
-                    RailDirection.Corner => emptyCornerSprite,
-                    _ => emptyHorizontalSprite
+                    RailDirection.EVertical => EmptyVerticalSprite,
+                    RailDirection.EHorizontal => EmptyHorizontalSprite,
+                    RailDirection.ECorner => EmptyCornerSprite,
+                    _ => EmptyHorizontalSprite
                 };
                 break;
         }
@@ -106,45 +107,47 @@ public class Waypoint : MonoBehaviour
     {
         currentDirection = currentDirection switch
         {
-            RailDirection.Horizontal => RailDirection.Vertical,
-            RailDirection.Vertical => RailDirection.Horizontal,
-            _ => RailDirection.Horizontal
+            RailDirection.EHorizontal => RailDirection.EVertical,
+            RailDirection.EVertical => RailDirection.EHorizontal,
+            _ => RailDirection.EHorizontal
         };
 
         UpdateSprite();
     }
 
-    public void SetOrientationAngle(Vector3 previousPosition, Vector3 nextPosition,
-        BeltController.PathType type)
+    public void SetOrientationAngle(Vector3 _previousPosition, Vector3 _nextPosition,
+        BeltController.PathType _type)
     {
-        PreviousPositionNormalized = (transform.position - previousPosition).normalized;
-        NextPositionNormalized = (nextPosition - transform.position).normalized;
+        currentPathType = _type;
+        
+        previousPositionNormalized = (transform.position - _previousPosition).normalized;
+        nextPositionNormalized = (_nextPosition - transform.position).normalized;
 
-        if (NextPositionNormalized.y == 0 && PreviousPositionNormalized.y == 0)
+        if (nextPositionNormalized.y == 0 && previousPositionNormalized.y == 0)
         {
-            currentDirection = RailDirection.Horizontal;
+            currentDirection = RailDirection.EHorizontal;
         }
-        else if (NextPositionNormalized.x == 0 && PreviousPositionNormalized.x == 0)
+        else if (nextPositionNormalized.x == 0 && previousPositionNormalized.x == 0)
         {
-            currentDirection = RailDirection.Vertical;
+            currentDirection = RailDirection.EVertical;
         }
         else
         {
-            currentDirection = RailDirection.Corner;
-            if (NextPositionNormalized.x == 1 && PreviousPositionNormalized.x == 0 && NextPositionNormalized.y == 0 &&
-                PreviousPositionNormalized.y == 1)
+            currentDirection = RailDirection.ECorner;
+            if (nextPositionNormalized.x == 1 && previousPositionNormalized.x == 0 && nextPositionNormalized.y == 0 &&
+                previousPositionNormalized.y == 1)
             {
                 transform.eulerAngles = new Vector3(0, 0, -90);
             }
-            else if (NextPositionNormalized.x == 0 && PreviousPositionNormalized.x == 1 &&
-                     NextPositionNormalized.y == -1 &&
-                     PreviousPositionNormalized.y == 0)
+            else if (nextPositionNormalized.x == 0 && previousPositionNormalized.x == 1 &&
+                     nextPositionNormalized.y == -1 &&
+                     previousPositionNormalized.y == 0)
             {
                 transform.eulerAngles = new Vector3(0, 0, 180);
             }
-            else if (NextPositionNormalized.x == -1 && PreviousPositionNormalized.x == 0 &&
-                     NextPositionNormalized.y == 0 &&
-                     PreviousPositionNormalized.y == -1)
+            else if (nextPositionNormalized.x == -1 && previousPositionNormalized.x == 0 &&
+                     nextPositionNormalized.y == 0 &&
+                     previousPositionNormalized.y == -1)
             {
                 transform.eulerAngles = new Vector3(0,0,90);
             }
