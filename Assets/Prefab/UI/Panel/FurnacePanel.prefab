@@ -1592,16 +1592,7 @@ MonoBehaviour:
   m_Value: 0
   m_MultiSelect: 0
   m_Options:
-    m_Options:
-    - m_Text: Default
-      m_Image: {fileID: 0}
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: Iron Ingot
-      m_Image: {fileID: -6504919073095336983, guid: 30f1fbe98cbbd7b41ba9144350b0b562, type: 3}
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: Copper Ingot
-      m_Image: {fileID: 7673461933543648006, guid: db7a8bad45fd3c049b0f81955edfbd84, type: 3}
-      m_Color: {r: 1, g: 1, b: 1, a: 1}
+    m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -1648,10 +1639,13 @@ MonoBehaviour:
     m_Image: {fileID: 0}
     m_Color: {r: 1, g: 1, b: 1, a: 1}
   - m_Text: Iron Ingot
-    m_Image: {fileID: -6504919073095336983, guid: 30f1fbe98cbbd7b41ba9144350b0b562, type: 3}
+    m_Image: {fileID: 7628354856750662568, guid: 2e1e7e20e3db85b438f381f135f7b495, type: 3}
     m_Color: {r: 1, g: 1, b: 1, a: 1}
   - m_Text: Copper Ingot
-    m_Image: {fileID: 7673461933543648006, guid: db7a8bad45fd3c049b0f81955edfbd84, type: 3}
+    m_Image: {fileID: -3550322353369200474, guid: 2e1e7e20e3db85b438f381f135f7b495, type: 3}
+    m_Color: {r: 1, g: 1, b: 1, a: 1}
+  - m_Text: Gold Ingot
+    m_Image: {fileID: -2138662389539027680, guid: 2e1e7e20e3db85b438f381f135f7b495, type: 3}
     m_Color: {r: 1, g: 1, b: 1, a: 1}
   FurnaceCrafts:
   - {fileID: 11400000, guid: b5907d3c475caf0448277bd1d769421f, type: 2}

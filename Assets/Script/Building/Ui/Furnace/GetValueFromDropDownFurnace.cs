@@ -28,6 +28,7 @@ public class GetValueFromDropDownFurnace : MonoBehaviour
     private void Start()
     {
         DropDown.onValueChanged.AddListener(ActionToCall);
+        AddNewCraft();
     }
 
 
