@@ -861,7 +861,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanAcceptItem: 1
   HeatResistance: 150
-  GemCrafterSpeed: 20
+  GemCrafterSpeed: 5
   EndTimer: 20
   Timer: 0
   GemResult:
