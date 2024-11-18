@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4003901326752999360}
   - component: {fileID: 3616469811500005753}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: count
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -235,6 +235,7 @@ MonoBehaviour:
   AcceptAll: 1
   IsHighlight: 0
   ItemAccepted: {fileID: 0}
+  CountNeeded: 0
 --- !u!114 &6009940388478069916
 MonoBehaviour:
   m_ObjectHideFlags: 0
