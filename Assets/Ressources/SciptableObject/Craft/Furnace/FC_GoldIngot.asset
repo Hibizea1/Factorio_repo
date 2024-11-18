@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: FC_GoldIngot
   m_EditorClassIdentifier: 
   Name: Gold Ingot
-  Item1: {fileID: 11400000, guid: a6c8e0d70d2e46241a4eebd69d240921, type: 2}
-  Item2: {fileID: 11400000, guid: 881cf186f743be740a462f7260a43917, type: 2}
+  InputItem: {fileID: 11400000, guid: a6c8e0d70d2e46241a4eebd69d240921, type: 2}
+  OutputItem: {fileID: 11400000, guid: 881cf186f743be740a462f7260a43917, type: 2}
   RequiresHeat: 0

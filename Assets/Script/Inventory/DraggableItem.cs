@@ -53,6 +53,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
     {
         if (parent.GetComponent<DefaultSlot>().Data == null) return;
         Debug.Log("drag");
+
+        if (parent.GetComponent<DefaultSlot>().Count != CountDrag)
+        {
+            countDrag = parent.GetComponent<DefaultSlot>().Count;
+        }
         transform.position = Input.mousePosition;
     }
 

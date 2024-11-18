@@ -1,24 +1,25 @@
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Serialization;
+
 [DefaultExecutionOrder(-100)]
 public class CrafterDataManager : MonoBehaviour
 {
-    public static CrafterDataManager instance;
+    public static CrafterDataManager SInstance;
 
-    public List<CraftingRule> crafts = new();
+    public List<CraftingRule> Crafts = new();
     public Action addCraftEvent;
 
     private void Awake()
     {
-        instance = this;
+        SInstance = this;
     }
     public void AddCraft(CraftingRule NewCraft)
     {
-        if (crafts.Contains(NewCraft)) { return; }
+        if (Crafts.Contains(NewCraft)) { return; }
 
-        crafts.Add(NewCraft);
+        Crafts.Add(NewCraft);
         addCraftEvent?.Invoke();
     }
 }

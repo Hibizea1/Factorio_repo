@@ -1301,7 +1301,6 @@ GameObject:
   - component: {fileID: 8304787854813016447}
   - component: {fileID: 4477036470141552600}
   - component: {fileID: 4417938315789829195}
-  - component: {fileID: 6194339937065933013}
   m_Layer: 5
   m_Name: FurnacePanel
   m_TagString: Untagged
@@ -1349,28 +1348,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0991e7925aa925428a949c83f7adb97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EntrySlot: {fileID: 3029744829862348705}
-  ResultSlot: {fileID: 8752165979118803121}
-  Slider: {fileID: 534746467637557948}
-  DropDown: {fileID: 6908160320908757188}
---- !u!114 &6194339937065933013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3766694337843560336}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7a9dfeda21582b4ca352959d11ba1bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CanAcceptItem: 1
-  HeatResistance: 150
-  FurnaceSpeed: 1
-  EndTimer: 5
-  timer: 0
-  SelectedCraft: {fileID: 0}
   TimerSlider: {fileID: 534746467637557948}
   Dropdown: {fileID: 6908160320908757188}
   IngredientSlot: {fileID: 3029744829862348705}

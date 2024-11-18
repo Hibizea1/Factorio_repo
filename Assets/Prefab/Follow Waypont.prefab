@@ -100,13 +100,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b785c1ca536060f41b8847fd6d7dbd83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fillVerticalSprite: {fileID: 1363340638, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
-  fillHorizontalSprite: {fileID: -1249759790, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
-  fillCornerSprite: {fileID: 0}
-  followVerticalSprite: {fileID: 854131340, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
-  followHorizontalSprite: {fileID: 1617151186, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
-  followCornerSprite: {fileID: 1975242349, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
-  emptyVerticalSprite: {fileID: 1363340638, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
-  emptyHorizontalSprite: {fileID: 992981901, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
-  emptyCornerSprite: {fileID: 0}
-  spriteRenderer: {fileID: 8274309327393224700}
+  FillVerticalSprite: {fileID: -1359287043, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
+  FillHorizontalSprite: {fileID: -145421047, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
+  FillCornerSprite: {fileID: 0}
+  FollowVerticalSprite: {fileID: 854131340, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
+  FollowHorizontalSprite: {fileID: 1617151186, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
+  FollowCornerSprite: {fileID: 1975242349, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
+  EmptyVerticalSprite: {fileID: -27487191, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
+  EmptyHorizontalSprite: {fileID: 1885291831, guid: aea857b3eb237fc46b9c75e26bdd292e, type: 3}
+  EmptyCornerSprite: {fileID: 0}
+  SpriteRenderer: {fileID: 8274309327393224700}

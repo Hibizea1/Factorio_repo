@@ -26,7 +26,7 @@ public class CraftingController : Controller
 
     private void Awake()
     {
-        CrafterDataManager.instance.addCraftEvent += UpdateCraftPossibility;
+        CrafterDataManager.SInstance.addCraftEvent += UpdateCraftPossibility;
     }
     void Start()
     {
@@ -65,15 +65,15 @@ public class CraftingController : Controller
     public void UpdateCraftPossibility()
     {
         DestroyAllButtons();
-        for (int i = 0; i < CrafterDataManager.instance.crafts.Count; i++)
+        for (int i = 0; i < CrafterDataManager.SInstance.Crafts.Count; i++)
         {
             GameObject btn = Instantiate(buttonPrefab, content);
             btn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text =
-                CrafterDataManager.instance.crafts[i].result.name;
+                CrafterDataManager.SInstance.Crafts[i].result.name;
             btn.transform.GetChild(1).GetComponent<Image>().sprite =
-                CrafterDataManager.instance.crafts[i].result.sprite;
+                CrafterDataManager.SInstance.Crafts[i].result.sprite;
             btn.transform.GetChild(1).GetComponent<Image>().preserveAspect = true;
-            btn.GetComponent<SpawnRequireSlots>().RequireSlot1 = CrafterDataManager.instance.crafts[i];
+            btn.GetComponent<SpawnRequireSlots>().RequireSlot1 = CrafterDataManager.SInstance.Crafts[i];
             btn.GetComponent<SpawnRequireSlots>().CraftingController = this;
 
             allButtonsInContent.Add(btn);

@@ -8,39 +8,42 @@ public class FurnaceController : Controller
     //Float and Int
     [Header("Float and Int")] [SerializeField]
     private int HeatResistance;
-
-    private float adjustedFurnaceSpeed;
-
+    
     [SerializeField] private float FurnaceSpeed;
     [SerializeField] private float EndTimer;
+    private float timer = 0;
 
-
-    [SerializeField] private float timer = 0;
 
     //Getter
     public float EndTimer1 => EndTimer;
 
     //Script
-    [Header("Script")] [SerializeField] private FurnaceCraft SelectedCraft;
-    private ItemData Result;
+    [SerializeField] private FurnaceCraft selectedCraft;
     private BuildUi buildUi;
+    private FurnacePanelInfo panelInfo;
 
     //Unity Component
-    [Header("Unity Component")] [SerializeField]
-    private Slider TimerSlider;
-
-    [SerializeField] private TMP_Dropdown Dropdown;
-    [SerializeField] private DefaultSlot IngredientSlot;
-    [SerializeField] private DefaultSlot ResultSlot;
-    [SerializeField] private TextMeshProUGUI HeatResistanceText;
-    [SerializeField] private TextMeshProUGUI HeatSpeedText;
+    private Slider timerSlider;
+    private TMP_Dropdown dropdown;
+    private DefaultSlot ingredientSlot;
+    private DefaultSlot resultSlot;
+    private TextMeshProUGUI heatResistanceText;
+    private TextMeshProUGUI heatSpeedText;
 
     private void Start()
     {
-        TimerSlider.maxValue = EndTimer1;
-        HeatResistanceText.text = HeatResistance.ToString();
-        adjustedFurnaceSpeed = FurnaceSpeed * (1 + VolcanoController.Instance.CurrentVolcanoHeat1 / 100f);
-        HeatSpeedText.text = Mathf.Round(adjustedFurnaceSpeed).ToString();
+        //Get Component From UI
+        panelInfo = GetComponent<BuildUi>().OpenPrefab.GetComponent<FurnacePanelInfo>();
+        timerSlider = panelInfo.Slider1;
+        dropdown = panelInfo.DropDown1;
+        ingredientSlot = panelInfo.IngredientSlot1;
+        resultSlot = panelInfo.ResultSlot1;
+        heatSpeedText = panelInfo.HeatSpeedText1;
+        heatResistanceText = panelInfo.HeatResistanceText1;
+
+        timerSlider.maxValue = EndTimer1;
+        heatResistanceText.text = HeatResistance.ToString();
+        heatSpeedText.text = Mathf.Round(FurnaceSpeed).ToString();
     }
 
     private void Update()
@@ -51,43 +54,43 @@ public class FurnaceController : Controller
 
     public override ItemData GetItemData()
     {
-        if (ResultSlot.Count <= 0)
+        if (resultSlot.Count <= 0)
         {
-            ResultSlot.Data = null;
+            resultSlot.Data = null;
         }
         else
         {
-            ResultSlot.Count--;
+            resultSlot.Count--;
         }
 
-        return ResultSlot.Data;
+        return resultSlot.GetItemFromSlot();
     }
 
     public override int GetItemCount()
     {
-        int count = ResultSlot.Count;
-        ResultSlot.Count = 0;
+        int count = resultSlot.GetCountFromSlot();
+        resultSlot.Count = 0;
         return count;
     }
 
     public override void SetItemCountForMultiSlot(int _count, ItemData _data)
     {
-        IngredientSlot.Data = _data;
-        IngredientSlot.Count += _count;
+        ingredientSlot.SetItemForCraft(_data, _count);
     }
 
     private void GetCraft()
     {
-        SelectedCraft = Dropdown.gameObject.GetComponent<GetValueFromDropDownFurnace>().FurnaceCraft;
-        if (SelectedCraft != null)
+        selectedCraft = dropdown.gameObject.GetComponent<GetValueFromDropDownFurnace>().FurnaceCraft;
+        if (selectedCraft != null)
         {
-            IngredientSlot.ItemAccepted = SelectedCraft.Item1;
+            ingredientSlot.ItemAccepted = selectedCraft.InputItem;
+            Debug.Log("Item Accepted : " + ingredientSlot.ItemAccepted);
         }
     }
-    
+
     public override bool HasCraftSelected()
     {
-        if (SelectedCraft != null)
+        if (selectedCraft != null)
         {
             return true;
         }
@@ -97,51 +100,30 @@ public class FurnaceController : Controller
         }
     }
 
-   private void FurnaceHeating()
-{
-    if (SelectedCraft == null || IngredientSlot.Count == 0) return;
-
-    if (VolcanoController.Instance.CurrentVolcanoHeat1 < SelectedCraft.RequiresHeat) return;
-
-    if (VolcanoController.Instance.CurrentVolcanoHeat1 > HeatResistance)
+    private void FurnaceHeating()
     {
-        float failChance = UnityEngine.Random.Range(0f, 1f);
-        if (failChance < 0.5f)
+        if (selectedCraft == null || ingredientSlot.Count == 0) return;
+        
+        if (ingredientSlot.Data == selectedCraft.InputItem)
         {
-            Debug.Log("Crafting failed due to high temperature.");
-            return;
-        }
-    }
-
-    if (IngredientSlot.Data == SelectedCraft.Item1)
-    {
-        if (timer <= EndTimer)
-        {
-            adjustedFurnaceSpeed = FurnaceSpeed * (1 + VolcanoController.Instance.CurrentVolcanoHeat1 / 100f);
-            HeatSpeedText.text = Mathf.Round(adjustedFurnaceSpeed).ToString();
-            timer += adjustedFurnaceSpeed * Time.deltaTime;
-            TimerSlider.value = timer;
-        }
-        else
-        {
-            Result = SelectedCraft.Item2;
-            ResultSlot.Data = Result;
-            ResultSlot.Count += 1;
-            IngredientSlot.Count -= 1;
-            if (Result != null)
+            if (timer <= EndTimer)
             {
-                ResultSlot.transform.GetChild(1).GetComponent<Image>().sprite = Result.sprite;
-                ResultSlot.transform.GetChild(1).GetComponent<Image>().color = Color.white;
+                heatSpeedText.text = Mathf.Round(FurnaceSpeed).ToString();
+                timer += FurnaceSpeed * Time.deltaTime;
+                timerSlider.value = timer;
             }
-
-            Debug.Log("Crafted");
-            timer = 0;
-            TimerSlider.value = timer;
-            if (IngredientSlot.Count <= 0)
+            else
             {
-                IngredientSlot.Data = null;
+                resultSlot.SetItemForCraft(selectedCraft.OutputItem, 1);
+                ingredientSlot.Count -= 1;
+                Debug.Log("Crafted");
+                timer = 0;
+                timerSlider.value = timer;
+                if (ingredientSlot.Count <= 0)
+                {
+                    ingredientSlot.Data = null;
+                }
             }
         }
     }
-}
 }

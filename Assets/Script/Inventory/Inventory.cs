@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
@@ -12,6 +14,20 @@ public class Inventory : MonoBehaviour
 
     const int inventorySize = 9;
     [SerializeField] GameObject content;
+
+    
+    public static Inventory SInstance { get; private set; }
+    private void Awake()
+    {
+        if (SInstance == null)
+        {
+            SInstance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
 
     private void Start()
     {
@@ -61,8 +77,8 @@ public class Inventory : MonoBehaviour
 
             if (slot[0].Count <= 0)
             {
+                slot[0].SetItemForInventory(null, 0);
                 items.Remove(slot[0]);
-                slot[0].SetItem(null, 0);
             }
         }
 
@@ -120,6 +136,11 @@ public class Inventory : MonoBehaviour
             if (item.Data == data && item.Count >= count) return true;
         }
         return false;
+    }
+    
+    public void OpenAndCloseInventory(InputAction.CallbackContext context) 
+    {
+        inventoryPanel.SetActive(!inventoryPanel.activeSelf);
     }
 }
 

@@ -1,18 +1,26 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class BeltController : MonoBehaviour
 {
-    [SerializeField] private float beltSpeed;
-    [SerializeField] private GameObject waypointPrefab; // Un seul prefab pour tous les waypoints
-    [SerializeField] private LayerMask layerMask;
+    [SerializeField] private float BeltSpeed;
+    [SerializeField] private GameObject WaypointPrefab; // Un seul prefab pour tous les waypoints
+    [SerializeField] private LayerMask LayerMask;
+
+    private ItemData transportedItem;
+    private int countItem;
 
     private List<PathNode> pathNodes = new();
     private HashSet<Vector3> occupiedPositions = new();
-    private int currentNodeIndex = 0;
+    [SerializeField] private float WaitingTime = 0;
+    [SerializeField] private int Wait = 5;
+    [SerializeField] private int CurrentNodeIndex = 0;
     private bool pathValidated = false;
     private bool isDrawingPath = false;
+    private bool isStopped = false;
 
     public static BeltController SelectedBelt { get; set; }
 
@@ -38,17 +46,17 @@ public class BeltController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             selectedPathType = PathType.Fill;
             Debug.Log(selectedPathType);
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        else if (Input.GetKeyDown(KeyCode.L))
         {
             selectedPathType = PathType.Empty;
             Debug.Log(selectedPathType);
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        else if (Input.GetKeyDown(KeyCode.P))
         {
             selectedPathType = PathType.Follow;
             Debug.Log(selectedPathType);
@@ -96,9 +104,27 @@ public class BeltController : MonoBehaviour
             RotateNodeAtPosition(GetMousePositionRounded());
         }
 
-        if (pathValidated && pathNodes.Count > 1)
+        MoveCart();
+        
+        if (isStopped)
         {
-            MoveAlongPath();
+            WaitingTime += Time.deltaTime;
+            if (WaitingTime >= Wait)
+            {
+                isStopped = false;
+                WaitingTime = 0;
+            }
+        }
+    }
+
+    private void MoveCart()
+    {
+        if (!isStopped)
+        {
+            if (pathValidated && pathNodes.Count > 1)
+            {
+                MoveAlongPath();
+            }
         }
     }
 
@@ -114,6 +140,7 @@ public class BeltController : MonoBehaviour
         {
             mousePosition.x++;
         }
+
         if (mousePosition.y % 2 != 0)
         {
             mousePosition.y++;
@@ -142,7 +169,7 @@ public class BeltController : MonoBehaviour
             return;
         }
 
-        GameObject newWaypoint = Instantiate(waypointPrefab, position, Quaternion.identity);
+        GameObject newWaypoint = Instantiate(WaypointPrefab, position, Quaternion.identity);
         MarkOccupiedArea(position);
 
 
@@ -213,22 +240,83 @@ public class BeltController : MonoBehaviour
     {
         if (pathNodes.Count == 0) return;
 
-        PathNode currentNode = pathNodes[currentNodeIndex];
-        transform.position = Vector3.MoveTowards(transform.position, currentNode.Position, beltSpeed * Time.deltaTime);
+        PathNode currentNode = pathNodes[CurrentNodeIndex];
+        transform.position = Vector3.MoveTowards(transform.position, currentNode.Position, BeltSpeed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, currentNode.Position) <= 0.1f)
         {
-            if (currentNodeIndex >= pathNodes.Count - 1)
+            if (CurrentNodeIndex >= pathNodes.Count - 1)
             {
-                currentNodeIndex = 0;
+                CheckNodeType();
+                CurrentNodeIndex = 0;
             }
             else
             {
-                currentNodeIndex++;
+                CheckNodeType();
+                CurrentNodeIndex++;
             }
         }
     }
 
+    private void CheckNodeType()
+    {
+        switch (pathNodes[CurrentNodeIndex].Type)
+        {
+            case PathType.Empty:
+                isStopped = true;
+                EmptyCart();
+                break;
+            case PathType.Fill:
+                isStopped = true;
+                FillCart();
+                break;
+            case PathType.Follow:
+                isStopped = false;
+                break;
+        }
+    }
+
+    private void FillCart()
+    {
+        Collider2D[] collider = Physics2D.OverlapCircleAll(transform.position, 1, LayerMask);
+
+        float waitingTime = 0;
+        int wait = 5;
+
+
+        if (collider != null)
+        {
+            for (int i = 0; i < collider.Length; i++)
+            {
+                if (collider[i].gameObject != gameObject && collider[i].TryGetComponent(out Controller c))
+                {
+                    transportedItem = c.GetItemData();
+                    countItem += c.GetItemCount();
+                    Debug.Log("retrieve item");
+
+                }
+            }
+        }
+    }
+
+    private void EmptyCart()
+    {
+        Collider2D[] collider = Physics2D.OverlapCircleAll(transform.position, 1, LayerMask);
+        float waitingTime = 0;
+        int wait = 5;
+        if (collider != null)
+        {
+            for (int i = 0; i < collider.Length; i++)
+            {
+                if (collider[i].gameObject != gameObject && collider[i].TryGetComponent(out Controller c))
+                {
+                    c.SetItemCountForMultiSlot(countItem, transportedItem);
+                    countItem = 0;
+                    Debug.Log("empty item");
+                }
+            }
+        }
+    }
 
     private bool IsPathClosed()
     {

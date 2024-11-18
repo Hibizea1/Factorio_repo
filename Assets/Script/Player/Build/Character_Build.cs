@@ -8,7 +8,6 @@ public class Character_Build : MonoBehaviour
     [SerializeField] private Color ValidPlacementColor = new Color(0, 1, 0, 0.5f);
     [SerializeField] private Color InvalidPlacementColor = new Color(1, 0, 0, 0.5f);
     [SerializeField] private GameObject Canva;
-    [SerializeField] private Inventory Inventory;
 
     private Building buildingPrefab;
     private GameObject previewObject;
@@ -54,30 +53,30 @@ public class Character_Build : MonoBehaviour
 
         if (!previewObject.activeSelf) previewObject.SetActive(true);
 
-        Vector3 mousePosition = GetMouseWorldPosition();
+        Vector3 mousePosition = GetMousePositionInWorld2D();
         previewObject.transform.position = mousePosition;
 
         canPlace = CheckPlacementValidity(mousePosition);
         ChangePreviewColor(canPlace);
     }
-
-    private Vector3 GetMouseWorldPosition()
-    {
-        Vector3 mousePosition = Mouse.current.position.ReadValue();
-        mousePosition.z = mainCamera.nearClipPlane;
-        Vector3 worldPosition = mainCamera.ScreenToWorldPoint(mousePosition);
-        worldPosition.x = Mathf.Round(worldPosition.x);
-        worldPosition.y = Mathf.Round(worldPosition.y);
-        worldPosition.z = 0;
-        return worldPosition;
-    }
     
     Vector3 GetMousePositionInWorld2D()
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.x = Mathf.Round(mousePosition.x);
-        mousePosition.y = Mathf.Round(mousePosition.y);
-        mousePosition.z = 0;
+        mousePosition = new Vector3(
+            Mathf.Round(mousePosition.x),
+            Mathf.Round(mousePosition.y),
+            0
+        );
+        if (mousePosition.x % 2 != 0)
+        {
+            mousePosition.x++;
+        }
+        if (mousePosition.y % 2 != 0)
+        {
+            mousePosition.y++;
+        }
+
         return mousePosition;
     }
 
@@ -96,7 +95,7 @@ public class Character_Build : MonoBehaviour
 
     private void PlaceObject()
     {
-        Inventory.RemoveItem(buildingPrefab, 1);
+        Inventory.SInstance.RemoveItem(buildingPrefab, 1);
         Instantiate(buildingPrefab.prefab, GetMousePositionInWorld2D(), Quaternion.identity);
         VolcanoController.Instance.IncreaseVolcanoHeat(buildingPrefab.Rarity);
         Destroy(previewObject);

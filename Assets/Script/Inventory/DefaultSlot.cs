@@ -106,12 +106,32 @@ public class DefaultSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
         }
     }
 
-    public virtual void SetItem(ItemData d, int i)
+    public virtual void SetItemForCraft(ItemData d, int i)
+    {
+        Data = d;
+        Count += i;
+        ChangeColorAndSprite();
+    }
+
+    public virtual void SetItemForInventory(ItemData d, int i)
     {
         Data = d;
         Count = i;
+        ChangeColorAndSprite();
     }
 
+    public virtual ItemData GetItemFromSlot()
+    {
+        ChangeColorAndSprite();
+        return Data;
+    }
+
+    public virtual int GetCountFromSlot()
+    {
+        ChangeColorAndSprite();
+        return Count;
+    }
+    
     public virtual void UseItem()
     {
     }

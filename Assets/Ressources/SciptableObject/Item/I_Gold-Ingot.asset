@@ -15,7 +15,7 @@ MonoBehaviour:
   ID: 18
   description: 
   nameItem: Gold Ingot
-  sprite: {fileID: 8021791581365416753, guid: b10ba62c394c0cd429cf2f0f9c8e9ff7, type: 3}
+  sprite: {fileID: -2138662389539027680, guid: 2e1e7e20e3db85b438f381f135f7b495, type: 3}
   Type: 1
   durability: 0
   type: 0

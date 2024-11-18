@@ -31,7 +31,9 @@ public class GemController : Controller
     public BuildingRarity Rarity { get; set; }
 
     //Script
-    [Header("Script")] private ItemData result;
+    [Header("Script")] 
+    [SerializeField] private ItemData InputItem;
+    private ItemData result;
     private BuildUi buildUi;
 
     //Unity Component
@@ -49,6 +51,7 @@ public class GemController : Controller
 
     private void Start()
     {
+        IngredientSlot.ItemAccepted = InputItem;
         TimerSlider.maxValue = EndTimer1;
         HeatResistanceText.text = HeatResistance.ToString();
         adjustedGemCrafterSpeed = GemCrafterSpeed * (1 + VolcanoController.Instance.CurrentVolcanoHeat1 / 100f);
@@ -135,10 +138,7 @@ public class GemController : Controller
 
             for (int i = 0; i < craftedGems.Count; i++)
             {
-                ResultSlots[i].Data = craftedGems[i];
-                ResultSlots[i].Count++;
-                ResultSlots[i].Img1.sprite = craftedGems[i].sprite;
-                ResultSlots[i].Img1.color = Color.white;
+                ResultSlots[i].SetItemForCraft(craftedGems[i], 1);
             }
 
             craftedGems.Clear();

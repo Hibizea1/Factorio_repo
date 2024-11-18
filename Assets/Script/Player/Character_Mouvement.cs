@@ -39,9 +39,4 @@ public class Character_Mouvement : MonoBehaviour
         Camera camera = Camera.main;
         camera.orthographicSize = Mathf.Clamp(camera.orthographicSize + context.ReadValue<float>(), 15, 30);
     }
-
-    public void OpenAndCloseInventory(InputAction.CallbackContext context) 
-    {
-        inventory.SetActive(!inventory.activeSelf);
-    }
 }
