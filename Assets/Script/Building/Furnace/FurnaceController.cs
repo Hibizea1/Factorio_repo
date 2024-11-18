@@ -84,6 +84,7 @@ public class FurnaceController : Controller
         if (selectedCraft != null)
         {
             ingredientSlot.ItemAccepted = selectedCraft.InputItem;
+            ingredientSlot.CountNeeded = 1;
             Debug.Log("Item Accepted : " + ingredientSlot.ItemAccepted);
         }
     }

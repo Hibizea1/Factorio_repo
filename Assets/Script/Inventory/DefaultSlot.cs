@@ -21,6 +21,7 @@ public class DefaultSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
 
     public bool IsHighlighted { get { return IsHighlight; } set { IsHighlight = value; } }
     [HideInInspector] public ItemData ItemAccepted;
+    [HideInInspector] public int CountNeeded;
     private Color color = Color.white;
 
     private void Start()

@@ -15,7 +15,7 @@ MonoBehaviour:
   ID: 103
   description: Craft Object.
   nameItem: Crafter
-  sprite: {fileID: 7482667652216324306, guid: e7c832fcbb7e37848865fdc13838e8b8, type: 3}
+  sprite: {fileID: -1646374031, guid: c61c53bedf17e9940b635295a1ad632d, type: 3}
   Type: 0
   heatResistance: 0
   prefab: {fileID: 6615508920817793373, guid: c7eafa21bdcd3614f91a5455d3bede12, type: 3}

@@ -19,7 +19,14 @@ public class TooltipTriggerUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
         if (slot.Data != null)
         {
             Header = slot.Data.nameItem;
-            Content = slot.Data.nameItem;
+            Content = slot.Count.ToString();
+            
+            showTooltipCoroutine = StartCoroutine(ShowTooltipWithDelay());
+        }
+        else if(slot.ItemAccepted != null)
+        {
+            Header = slot.ItemAccepted.nameItem;
+            Content = slot.CountNeeded.ToString();
             showTooltipCoroutine = StartCoroutine(ShowTooltipWithDelay());
         }
     }
@@ -29,7 +36,10 @@ public class TooltipTriggerUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
         if (showTooltipCoroutine != null)
         {
             StopCoroutine(showTooltipCoroutine);
+            Header = string.Empty;
+            Content = string.Empty;
         }
+
         TooltipSystem.Hide();
     }
 
@@ -39,12 +49,4 @@ public class TooltipTriggerUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
         TooltipSystem.Show(Content, Header);
     }
 
-    private void Update()
-    {
-        if (slot.Data == null)
-        {
-            Header = string.Empty;
-            Content = string.Empty;
-        }
-    }
 }

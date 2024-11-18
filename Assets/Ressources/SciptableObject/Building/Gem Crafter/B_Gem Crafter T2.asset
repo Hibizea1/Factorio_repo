@@ -15,7 +15,7 @@ MonoBehaviour:
   ID: 113
   description: Gem Crafter V2
   nameItem: Gem Crafter T2
-  sprite: {fileID: 0}
+  sprite: {fileID: -1879125671, guid: 37a7a2531ec84c84aa3f9b3a260f1511, type: 3}
   Type: 0
   heatResistance: 0
   prefab: {fileID: 0}

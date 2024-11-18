@@ -15,7 +15,7 @@ MonoBehaviour:
   ID: 105
   description: Mine Ores.
   nameItem: Mechanized tool miner
-  sprite: {fileID: 0}
+  sprite: {fileID: -174972289, guid: e9ff07ac4d329bb4a969bd7bb7c58324, type: 3}
   Type: 0
   heatResistance: 0
   prefab: {fileID: 1212696727665052526, guid: e5ee1173881df2f4eb1a3981bea605bc, type: 3}

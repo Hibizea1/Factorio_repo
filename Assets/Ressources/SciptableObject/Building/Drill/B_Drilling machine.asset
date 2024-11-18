@@ -15,7 +15,7 @@ MonoBehaviour:
   ID: 106
   description: Mine Ores.
   nameItem: Drilling machine
-  sprite: {fileID: 0}
+  sprite: {fileID: -260818802, guid: e9ff07ac4d329bb4a969bd7bb7c58324, type: 3}
   Type: 0
   heatResistance: 0
   prefab: {fileID: 0}

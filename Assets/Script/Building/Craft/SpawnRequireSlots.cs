@@ -53,6 +53,7 @@ public class SpawnRequireSlots : MonoBehaviour
             DefaultSlot defaultSlot = slot.GetComponent<DefaultSlot>();
             slots.Add(defaultSlot);
             defaultSlot.ItemAccepted = Craft.requires[i];
+            defaultSlot.CountNeeded = Craft.countPerRaquires[i];
             defaultSlot.AcceptAll = false;
             defaultSlot.IsHighlighted = true;
             Color color = defaultSlot.Img1.color;

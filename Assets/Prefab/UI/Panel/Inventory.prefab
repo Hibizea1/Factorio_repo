@@ -237,8 +237,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4801532332329245672}
   m_HandleRect: {fileID: 7913015084282846319}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.9868421
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1415,10 +1415,10 @@ PrefabInstance:
     - target: {fileID: 3059268159375394811, guid: 706cfd78421ddfd49a1acf992d0a5108, type: 3}
       propertyPath: Data
       value: 
-      objectReference: {fileID: 11400000, guid: 566a173cc60ae7344aa2f4a27e00511e, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 3059268159375394811, guid: 706cfd78421ddfd49a1acf992d0a5108, type: 3}
       propertyPath: Count
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5968109802589635639, guid: 706cfd78421ddfd49a1acf992d0a5108, type: 3}
       propertyPath: m_Pivot.x
