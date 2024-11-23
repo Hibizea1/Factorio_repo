@@ -4,19 +4,19 @@ using UnityEngine.InputSystem;
 
 public class Character_Build : MonoBehaviour
 {
-    [SerializeField] private LayerMask PlacementLayer;
-    [SerializeField] private Color ValidPlacementColor = new Color(0, 1, 0, 0.5f);
-    [SerializeField] private Color InvalidPlacementColor = new Color(1, 0, 0, 0.5f);
-    [SerializeField] private GameObject Canva;
+    [SerializeField] private LayerMask placementLayer;
+    [SerializeField] private Color validPlacementColor = new Color(0, 1, 0, 0.5f);
+    [SerializeField] private Color invalidPlacementColor = new Color(1, 0, 0, 0.5f);
+    [SerializeField] private GameObject canva;
 
-    private Building buildingPrefab;
-    private GameObject previewObject;
-    private Camera mainCamera;
-    private bool canPlace;
+    private Building _buildingPrefab;
+    private GameObject _previewObject;
+    private Camera _mainCamera;
+    private bool _canPlace;
 
     private void Awake()
     {
-        mainCamera = Camera.main;
+        _mainCamera = Camera.main;
         EventMaster.OnBuildingPrefabSet += SetBuildingPrefab;
     }
 
@@ -27,10 +27,10 @@ public class Character_Build : MonoBehaviour
 
     private void Update()
     {
-        if (buildingPrefab != null)
+        if (_buildingPrefab != null)
         {
             HandlePreview();
-            if (Mouse.current.leftButton.wasPressedThisFrame && canPlace)
+            if (Mouse.current.leftButton.wasPressedThisFrame && _canPlace)
             {
                 PlaceObject();
             }
@@ -39,7 +39,7 @@ public class Character_Build : MonoBehaviour
 
     private void SetBuildingPrefab(Building prefab)
     {
-        buildingPrefab = prefab;
+        _buildingPrefab = prefab;
         PreparePreview();
     }
 
@@ -47,17 +47,17 @@ public class Character_Build : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject())
         {
-            if (previewObject.activeSelf) previewObject.SetActive(false);
+            if (_previewObject.activeSelf) _previewObject.SetActive(false);
             return;
         }
 
-        if (!previewObject.activeSelf) previewObject.SetActive(true);
+        if (!_previewObject.activeSelf) _previewObject.SetActive(true);
 
         Vector3 mousePosition = GetMousePositionInWorld2D();
-        previewObject.transform.position = mousePosition;
+        _previewObject.transform.position = mousePosition;
 
-        canPlace = CheckPlacementValidity(mousePosition);
-        ChangePreviewColor(canPlace);
+        _canPlace = CheckPlacementValidity(mousePosition);
+        ChangePreviewColor(_canPlace);
     }
     
     Vector3 GetMousePositionInWorld2D()
@@ -83,34 +83,34 @@ public class Character_Build : MonoBehaviour
 
     private bool CheckPlacementValidity(Vector3 position)
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(position, 0.5f, PlacementLayer);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(position, 0.5f, placementLayer);
         return colliders.Length == 0;
     }
 
     private void ChangePreviewColor(bool isValid)
     {
-        SpriteRenderer renderer = previewObject.GetComponent<SpriteRenderer>();
-        renderer.color = isValid ? ValidPlacementColor : InvalidPlacementColor;
+        SpriteRenderer renderer = _previewObject.GetComponent<SpriteRenderer>();
+        renderer.color = isValid ? validPlacementColor : invalidPlacementColor;
     }
 
     private void PlaceObject()
     {
-        Inventory.SInstance.RemoveItem(buildingPrefab, 1);
-        Instantiate(buildingPrefab.prefab, GetMousePositionInWorld2D(), Quaternion.identity);
-        VolcanoController.Instance.IncreaseVolcanoHeat(buildingPrefab.Rarity);
-        Destroy(previewObject);
-        previewObject = null;
-        buildingPrefab = null;
+        Inventory.SInstance.RemoveItem(_buildingPrefab, 1);
+        Instantiate(_buildingPrefab.prefab, GetMousePositionInWorld2D(), Quaternion.identity);
+        VolcanoController.Instance.IncreaseVolcanoHeat(_buildingPrefab.Rarity);
+        Destroy(_previewObject);
+        _previewObject = null;
+        _buildingPrefab = null;
     }
 
     private void PreparePreview()
     {
-        if (previewObject) Destroy(previewObject);
+        if (_previewObject) Destroy(_previewObject);
 
-        previewObject = Instantiate(buildingPrefab.prefab);
-        previewObject.SetActive(false);
-        previewObject.GetComponent<BoxCollider2D>().enabled = false;
-        SpriteRenderer renderer = previewObject.GetComponent<SpriteRenderer>();
-        renderer.color = InvalidPlacementColor;
+        _previewObject = Instantiate(_buildingPrefab.prefab);
+        _previewObject.SetActive(false);
+        _previewObject.GetComponent<BoxCollider2D>().enabled = false;
+        SpriteRenderer renderer = _previewObject.GetComponent<SpriteRenderer>();
+        renderer.color = invalidPlacementColor;
     }
 }

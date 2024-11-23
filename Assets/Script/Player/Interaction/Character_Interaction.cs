@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Debug = System.Diagnostics.Debug;
 
 public class Character_Interaction : MonoBehaviour
 {
@@ -16,17 +17,17 @@ public class Character_Interaction : MonoBehaviour
 
     private void CheckCollision()
     {
-        Collider2D _mouseCollision = Physics2D.OverlapCircle(Camera.main.ScreenToWorldPoint(Input.mousePosition), 0.1f);
+        Debug.Assert(Camera.main != null, "Camera.main != null");
+        Collider2D mouseCollision = Physics2D.OverlapCircle(Camera.main.ScreenToWorldPoint(Input.mousePosition), 0.1f);
 
-        if (_mouseCollision != null &&
-            Vector3.Distance(_mouseCollision.gameObject.transform.position, transform.position) <= range &&
-            _mouseCollision.CompareTag("Build"))
+        if (mouseCollision != null &&
+            Vector3.Distance(mouseCollision.gameObject.transform.position, transform.position) <= range &&
+            mouseCollision.CompareTag("Build"))
         {
-            if (_mouseCollision.gameObject.TryGetComponent<BuildUi>(out BuildUi _b))
+            if (mouseCollision.gameObject.TryGetComponent<BuildUi>(out BuildUi b))
             {
-                _b.OpenUI();
+                b.OpenUI();
             }
         }
     }
-
 }
