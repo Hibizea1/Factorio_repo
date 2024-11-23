@@ -5,6 +5,6 @@ using UnityEngine;
 public class GemCrafterRule : ScriptableObject
 {
     [SerializeField] public ItemData ItemInput;
-    [SerializeField] public List<ItemData> ItemOutput = new();
+    [SerializeField] public List<ItemData> ItemOutput = new List<ItemData>();
     [SerializeField] public int RequiresHeat;
 }

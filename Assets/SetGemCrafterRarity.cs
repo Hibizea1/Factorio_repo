@@ -1,17 +1,15 @@
-using System;
 using UnityEngine;
 
 public class SetGemCrafterRarity : MonoBehaviour
 {
+    GemController gemController;
+    Pickeable pickeable;
 
-    private GemController gemController;
-    private Pickeable pickeable;
-    
-    private void Start()
+    void Start()
     {
         gemController = GetComponent<BuildUi>().OpenPrefab.GetComponent<GemController>();
         pickeable = GetComponent<Pickeable>();
-        Building building = (Building)pickeable.ScriptableObject;
+        var building = (Building)pickeable.ScriptableObject;
         gemController.Rarity = building.Rarity;
     }
 }

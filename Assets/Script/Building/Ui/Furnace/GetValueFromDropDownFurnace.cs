@@ -1,45 +1,43 @@
-using System;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 public class GetValueFromDropDownFurnace : MonoBehaviour
 {
-    [SerializeField] private TMP_Dropdown DropDown;
-    [SerializeField] private List<TMP_Dropdown.OptionData> DropDownOption = new List<TMP_Dropdown.OptionData>();
+    [SerializeField] TMP_Dropdown DropDown;
+    [SerializeField] List<TMP_Dropdown.OptionData> DropDownOption = new List<TMP_Dropdown.OptionData>();
 
-    [SerializeField] private List<FurnaceCraft> FurnaceCrafts = new List<FurnaceCraft>();
+    [SerializeField] List<FurnaceCraft> FurnaceCrafts = new List<FurnaceCraft>();
 
-    private FurnaceCraft furnaceCraft;
+    int dropDownIndex;
 
-    public FurnaceCraft FurnaceCraft => furnaceCraft;
+    public FurnaceCraft FurnaceCraft { get; private set; }
 
-    private int dropDownIndex;
-
-    private void Awake()
+    void Awake()
     {
         FurnaceDataManager.SInstance.FurnaceCraftEvent += AddCraftToList;
     }
 
-    private void Start()
+    void Start()
     {
         DropDown.onValueChanged.AddListener(ActionToCall);
         AddNewCraft();
+    }
+
+    void OnDestroy()
+    {
+        DropDown.onValueChanged.RemoveListener(ActionToCall);
     }
 
 
     public void GetDroopDownValue()
     {
         dropDownIndex = DropDown.value;
-        string dropDownText = DropDown.options[dropDownIndex].text;
+        var dropDownText = DropDown.options[dropDownIndex].text;
         Debug.Log(dropDownText);
     }
 
-    private void AddCraftToList()
+    void AddCraftToList()
     {
         Debug.Log("Set Craft");
         FurnaceCrafts = FurnaceDataManager.SInstance.Crafts;
@@ -47,42 +45,32 @@ public class GetValueFromDropDownFurnace : MonoBehaviour
     }
 
     [ContextMenu("Add New Craft")]
-    private void AddNewCraft()
+    void AddNewCraft()
     {
         DropDown.options.Clear();
         DropDownOption.Clear();
 
         foreach (var craft in FurnaceCrafts)
-        {
             DropDownOption.Add(new TMP_Dropdown.OptionData(craft.Name, craft?.Item2Sprite, Color.white));
-        }
 
         DropDown.AddOptions(DropDownOption);
         DropDown.RefreshShownValue();
     }
 
     [ContextMenu("Remove At")]
-    private void RemoveCraftAt()
+    void RemoveCraftAt()
     {
-        int index = 0;
-        if (DropDown.value == index)
-        {
-            DropDown.value = 0;
-        }
+        var index = 0;
+        if (DropDown.value == index) DropDown.value = 0;
 
         DropDown.options.RemoveAt(index);
         DropDown.RefreshShownValue();
     }
 
-    private void ActionToCall(int arg0)
+    void ActionToCall(int arg0)
     {
         dropDownIndex = DropDown.value;
-        furnaceCraft = FurnaceCrafts[dropDownIndex];
-        Debug.Log(furnaceCraft);
-    }
-
-    private void OnDestroy()
-    {
-        DropDown.onValueChanged.RemoveListener(ActionToCall);
+        FurnaceCraft = FurnaceCrafts[dropDownIndex];
+        Debug.Log(FurnaceCraft);
     }
 }

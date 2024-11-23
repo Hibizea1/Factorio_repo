@@ -1,41 +1,39 @@
-using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class RockCrusherController : Controller
 {
     //Float and Int
     [Header("Float and Int")] [SerializeField]
-    private int HeatResistance;
+    int HeatResistance;
 
-    private float adjustedRockCrusherSpeed;
-
-    [SerializeField] private float RockCrusherSpeed;
-    [SerializeField] private float EndTimer;
+    [SerializeField] float RockCrusherSpeed;
+    [SerializeField] float EndTimer;
 
 
-    [SerializeField] private float timer = 0;
+    [SerializeField] float timer;
+
+    //Script
+    [Header("Script")] [SerializeField] ItemData InputItem;
+    [SerializeField] ItemData OutputItem;
+
+    //Unity Component
+    [Header("Unity Component")] [SerializeField]
+    Slider TimerSlider;
+
+    [SerializeField] DefaultSlot IngredientSlot;
+    [SerializeField] DefaultSlot ResultSlot;
+    [SerializeField] TextMeshProUGUI HeatResistanceText;
+    [SerializeField] TextMeshProUGUI HeatSpeedText;
+
+    float adjustedRockCrusherSpeed;
+    BuildUi buildUi;
 
     //Getter
     public float EndTimer1 => EndTimer;
 
-    //Script
-    [Header("Script")] [SerializeField] private ItemData InputItem;
-    [SerializeField] private ItemData OutputItem;
-    private BuildUi buildUi;
-
-    //Unity Component
-    [Header("Unity Component")] [SerializeField]
-    private Slider TimerSlider;
-
-    [SerializeField] private DefaultSlot IngredientSlot;
-    [SerializeField] private DefaultSlot ResultSlot;
-    [SerializeField] private TextMeshProUGUI HeatResistanceText;
-    [SerializeField] private TextMeshProUGUI HeatSpeedText;
-
-    private void Start()
+    void Start()
     {
         IngredientSlot.ItemAccepted = InputItem;
         TimerSlider.maxValue = EndTimer1;
@@ -43,7 +41,7 @@ public class RockCrusherController : Controller
         HeatSpeedText.text = Mathf.Round(RockCrusherSpeed).ToString();
     }
 
-    private void Update()
+    void Update()
     {
         RockCrusherProcess();
     }
@@ -51,20 +49,16 @@ public class RockCrusherController : Controller
     public override ItemData GetItemData()
     {
         if (ResultSlot.Count <= 0)
-        {
             ResultSlot.Data = null;
-        }
         else
-        {
             ResultSlot.Count--;
-        }
 
         return ResultSlot.Data;
     }
 
     public override int GetItemCount()
     {
-        int count = ResultSlot.Count;
+        var count = ResultSlot.Count;
         ResultSlot.Count = 0;
         return count;
     }
@@ -75,11 +69,11 @@ public class RockCrusherController : Controller
         IngredientSlot.Count += _count;
     }
 
-    private void RockCrusherProcess()
+    void RockCrusherProcess()
     {
 
-        if(IngredientSlot.Count <= 0 && IngredientSlot.Data == null) return;
-        
+        if (IngredientSlot.Count <= 0 && IngredientSlot.Data == null) return;
+
         if (timer <= EndTimer)
         {
             HeatSpeedText.text = Mathf.Round(RockCrusherSpeed).ToString();
@@ -101,11 +95,7 @@ public class RockCrusherController : Controller
             Debug.Log("Crafted");
             timer = 0;
             TimerSlider.value = timer;
-            if (IngredientSlot.Count <= 0)
-            {
-                IngredientSlot.Data = null;
-            }
+            if (IngredientSlot.Count <= 0) IngredientSlot.Data = null;
         }
     }
 }
-

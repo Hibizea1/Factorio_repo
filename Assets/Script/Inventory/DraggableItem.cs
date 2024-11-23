@@ -1,47 +1,31 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
-    private Transform parent;
-
-    [SerializeField] private Image Image;
-
-    private int countDrag;
-    private ItemData dataDrag;
+    [SerializeField] Image Image;
 
 
-    public int CountDrag
-    {
-        get { return countDrag; }
-    }
+    public int CountDrag { get; private set; }
 
-    public ItemData Datadrag
-    {
-        get { return dataDrag; }
-    }
+    public ItemData Datadrag { get; private set; }
 
-    public Transform Parent
-    {
-        get { return parent; }
-        set { parent = value; }
-    }
-    private void Update()
+    public Transform Parent { get; set; }
+
+    void Update()
     {
         Image.preserveAspect = true;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        parent = transform.parent;
-        if (parent.GetComponent<DefaultSlot>().Data == null) return;
+        Parent = transform.parent;
+        if (Parent.GetComponent<DefaultSlot>().Data == null) return;
         Debug.Log("start drag");
 
-        dataDrag = parent.GetComponent<DefaultSlot>().Data;
-        countDrag = parent.GetComponent<DefaultSlot>().Count;
+        Datadrag = Parent.GetComponent<DefaultSlot>().Data;
+        CountDrag = Parent.GetComponent<DefaultSlot>().Count;
 
         transform.SetParent(transform.root);
         transform.SetAsLastSibling();
@@ -51,13 +35,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (parent.GetComponent<DefaultSlot>().Data == null) return;
+        if (Parent.GetComponent<DefaultSlot>().Data == null) return;
         Debug.Log("drag");
 
-        if (parent.GetComponent<DefaultSlot>().Count != CountDrag)
-        {
-            countDrag = parent.GetComponent<DefaultSlot>().Count;
-        }
+        if (Parent.GetComponent<DefaultSlot>().Count != CountDrag) CountDrag = Parent.GetComponent<DefaultSlot>().Count;
         transform.position = Input.mousePosition;
     }
 
@@ -65,11 +46,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
     {
         Debug.Log("end drag");
 
-        transform.SetParent(parent);
-        transform.position = parent.position;
+        transform.SetParent(Parent);
+        transform.position = Parent.position;
 
-        dataDrag = null;
-        countDrag = 0;
+        Datadrag = null;
+        CountDrag = 0;
 
         Image.raycastTarget = true;
     }

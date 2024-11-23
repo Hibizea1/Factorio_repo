@@ -1,18 +1,17 @@
-using System;
 using System.Linq;
 using UnityEngine;
 
 public class VolcanoController : MonoBehaviour
 {
-    public static VolcanoController Instance { get; private set; }
+    [SerializeField] int VolcanoHeat;
+    [SerializeField] int CurrentVolcanoHeat;
+    [SerializeField] float HeatIncreaseRate = 1f; // Rate at which heat increases
 
-    [SerializeField] private int VolcanoHeat;
-    [SerializeField] private int CurrentVolcanoHeat;
-    [SerializeField] private float HeatIncreaseRate = 1f; // Rate at which heat increases
+    public static VolcanoController Instance { get; private set; }
 
     public int CurrentVolcanoHeat1 => CurrentVolcanoHeat;
 
-    private void Awake()
+    void Awake()
     {
         if (Instance == null)
         {
@@ -25,12 +24,12 @@ public class VolcanoController : MonoBehaviour
         }
     }
 
-    private void SetInitialVolcanoHeat()
+    void SetInitialVolcanoHeat()
     {
         Pickeable[] buildings = FindObjectsOfType<Pickeable>().Where(x => x.CompareTag("Build")).ToArray();
-        foreach (Pickeable building in buildings)
+        foreach (var building in buildings)
         {
-            Building buildingObject = (Building)building.ScriptableObject;
+            var buildingObject = (Building)building.ScriptableObject;
             IncreaseVolcanoHeat(buildingObject.Rarity);
         }
     }

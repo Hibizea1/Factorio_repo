@@ -1,5 +1,3 @@
-
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,44 +8,47 @@ public class DefaultSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
 {
     public ItemData Data;
     public int Count;
-    [SerializeField] private TextMeshProUGUI TextCountItem;
-    [SerializeField] private Image Img;
+    [SerializeField] TextMeshProUGUI TextCountItem;
+    [SerializeField] Image Img;
 
-    public Image Img1 { get { return Img; } set { Img = value; } }
-
-    [SerializeField] private bool CanDropped = true;
+    [SerializeField] bool CanDropped = true;
     public bool AcceptAll = true;
-    [SerializeField] private bool IsHighlight = false;
-
-    public bool IsHighlighted { get { return IsHighlight; } set { IsHighlight = value; } }
+    [SerializeField] bool IsHighlight;
     [HideInInspector] public ItemData ItemAccepted;
     [HideInInspector] public int CountNeeded;
-    private Color color = Color.white;
+    Color color = Color.white;
 
-    private void Start()
+    public Image Img1
+    {
+        get => Img;
+        set => Img = value;
+    }
+
+    public bool IsHighlighted
+    {
+        get => IsHighlight;
+        set => IsHighlight = value;
+    }
+
+    void Start()
     {
         TextCountItem.text = Count.ToString();
         color!.a = 0.25f;
     }
 
-    private void Update()
+    void Update()
     {
         TextCountItem.text = Count.ToString();
         if (Count <= 0 && !IsHighlight)
-        {
             ChangeColorAndSprite();
-        }
-        else if (IsHighlight && Data == null) 
-        {
-            Img1.color = color;
-        }
+        else if (IsHighlight && Data == null) Img1.color = color;
     }
 
     public void OnDrop(PointerEventData eventData)
     {
         if (!CanDropped) return;
-        GameObject dropped = eventData.pointerDrag;
-        DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
+        var dropped = eventData.pointerDrag;
+        var draggableItem = dropped.GetComponent<DraggableItem>();
         if (!AcceptAll)
         {
             if (draggableItem.Datadrag == ItemAccepted)
@@ -59,7 +60,16 @@ public class DefaultSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
         }
     }
 
-    private void DropItem(DraggableItem _draggableItem)
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (Data != null && Data.Type == ObjectType.Building)
+        {
+            var building = (Building)Data;
+            EventMaster.TriggerBuildingPrefabSet(building);
+        }
+    }
+
+    void DropItem(DraggableItem _draggableItem)
     {
         if (_draggableItem.Datadrag == null) return;
 
@@ -74,7 +84,6 @@ public class DefaultSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
         }
         else if (transform == _draggableItem.Parent)
         {
-            return;
         }
         else
         {
@@ -86,7 +95,7 @@ public class DefaultSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
         }
     }
 
-    private void GiveDataToOtherParent(DraggableItem _dragged)
+    void GiveDataToOtherParent(DraggableItem _dragged)
     {
         _dragged.Parent.GetComponent<DefaultSlot>().Data = Data;
         _dragged.Parent.GetComponent<DefaultSlot>().Count = Count;
@@ -132,17 +141,8 @@ public class DefaultSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
         ChangeColorAndSprite();
         return Count;
     }
-    
+
     public virtual void UseItem()
     {
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (Data != null && Data.Type == ObjectType.Building)
-        {
-            Building building = (Building)Data;
-            EventMaster.TriggerBuildingPrefabSet(building);
-        }
     }
 }

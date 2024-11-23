@@ -3,24 +3,19 @@ using UnityEngine;
 
 public class SpawnRequireSlots : MonoBehaviour
 {
-    private GameObject CraftingSlots;
-    private CraftingRule Craft;
-
-    [SerializeField] private GameObject Slot;
     public static List<DefaultSlot> slots = new List<DefaultSlot>();
 
-    private CraftingController craftingController;
+    [SerializeField] GameObject Slot;
+
+    CraftingController craftingController;
+    GameObject CraftingSlots;
 
     public CraftingController CraftingController
     {
-        set { craftingController = value; }
+        set => craftingController = value;
     }
 
-    public CraftingRule RequireSlot1
-    {
-        get { return Craft; }
-        set { Craft = value; }
-    }
+    public CraftingRule RequireSlot1 { get; set; }
 
     void Start()
     {
@@ -31,12 +26,10 @@ public class SpawnRequireSlots : MonoBehaviour
     {
         if (CraftingSlots.transform.childCount > 0)
         {
-            for (int i = 0; i < CraftingSlots.transform.childCount; i++)
+            for (var i = 0; i < CraftingSlots.transform.childCount; i++)
             {
                 if (slots.Count > 0 && slots[i].Data != null)
-                {
                     Inventory.SInstance.AddItem(slots[i].Data, slots[i].Count);
-                }
 
                 Destroy(CraftingSlots.transform.GetChild(i).gameObject);
             }
@@ -44,23 +37,23 @@ public class SpawnRequireSlots : MonoBehaviour
             slots.Clear();
         }
 
-        craftingController.SelectedCraft1 = Craft;
+        craftingController.SelectedCraft1 = RequireSlot1;
 
 
-        for (int i = 0; i < Craft.requires.Count; i++)
+        for (var i = 0; i < RequireSlot1.requires.Count; i++)
         {
-            GameObject slot = Instantiate(Slot, CraftingSlots.transform);
-            DefaultSlot defaultSlot = slot.GetComponent<DefaultSlot>();
+            var slot = Instantiate(Slot, CraftingSlots.transform);
+            var defaultSlot = slot.GetComponent<DefaultSlot>();
             slots.Add(defaultSlot);
-            defaultSlot.ItemAccepted = Craft.requires[i];
-            defaultSlot.CountNeeded = Craft.countPerRaquires[i];
+            defaultSlot.ItemAccepted = RequireSlot1.requires[i];
+            defaultSlot.CountNeeded = RequireSlot1.countPerRaquires[i];
             defaultSlot.AcceptAll = false;
             defaultSlot.IsHighlighted = true;
-            Color color = defaultSlot.Img1.color;
+            var color = defaultSlot.Img1.color;
             color = Color.white;
             color.a = 0.25f;
             defaultSlot.Img1.color = color;
-            defaultSlot.Img1.sprite = Craft.requires[i].sprite;
+            defaultSlot.Img1.sprite = RequireSlot1.requires[i].sprite;
         }
     }
 }

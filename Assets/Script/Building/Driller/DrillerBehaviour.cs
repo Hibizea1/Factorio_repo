@@ -4,44 +4,41 @@ using UnityEngine.UI;
 
 public class DrillerBehaviour : Controller
 {
-    [SerializeField] private float miningSpeed;
-    [SerializeField] private LayerMask LayerMinable;
-    [SerializeField] private int range;
-    [SerializeField] private BuildUi Ui;
-    private DefaultSlot inventoryMiner;
-    private Coroutine mine;
-    private bool isStarted = false;
-    private Collider2D[] results = new Collider2D[10];
-    private Slider sliderMining;
-    
-    private void Start()
+    [SerializeField] float miningSpeed;
+    [SerializeField] LayerMask LayerMinable;
+    [SerializeField] int range;
+    [SerializeField] BuildUi Ui;
+    DefaultSlot inventoryMiner;
+    bool isStarted;
+    Coroutine mine;
+    Collider2D[] results = new Collider2D[10];
+    Slider sliderMining;
+
+    void Start()
     {
         inventoryMiner = Ui.OpenPrefab.GetComponent<GetSlot>().Slot;
         sliderMining = Ui.OpenPrefab.GetComponent<GetSlot>().SliderMining;
         mine = StartCoroutine(Mine());
     }
 
-    private void Update()
+    void Update()
     {
-        if (!isStarted)
-        {
-            StartCoroutine(Mine());
-        }
+        if (!isStarted) StartCoroutine(Mine());
+    }
+
+    void OnDestroy()
+    {
+        StopCoroutine(Mine());
     }
 
     public override ItemData GetItemData()
     {
-        if (inventoryMiner.Count <= 0)
-        {
-            return null;
-        }
-        else
-        {
-            inventoryMiner.Count--;
-            return inventoryMiner.Data;
-        }
+        if (inventoryMiner.Count <= 0) return null;
+
+        inventoryMiner.Count--;
+        return inventoryMiner.Data;
     }
-    
+
     public override bool HasCraftSelected()
     {
         return false;
@@ -49,30 +46,25 @@ public class DrillerBehaviour : Controller
 
     public override int GetItemCount()
     {
-        int count = inventoryMiner.Count;
+        var count = inventoryMiner.Count;
         inventoryMiner.Count = 0;
         return count;
     }
 
-    private void OnDestroy()
-    {
-        StopCoroutine(Mine());
-    }
 
-
-    private IEnumerator Mine()
+    IEnumerator Mine()
     {
         isStarted = true;
-        Collider2D collision = Physics2D.OverlapCircle(transform.position, 2, LayerMinable);
+        var collision = Physics2D.OverlapCircle(transform.position, 2, LayerMinable);
         if (collision != null &&
             Vector3.Distance(collision.gameObject.transform.position, transform.position) <= range)
         {
             Debug.Log("This is : " + collision.gameObject.name + ", " + "He has the tag : " + collision.gameObject.tag);
-            if (collision.TryGetComponent<Pickeable>(out Pickeable _p))
+            if (collision.TryGetComponent(out Pickeable _p))
             {
-                
-                
-                float delay = _p.delay;
+
+
+                var delay = _p.delay;
                 delay *= miningSpeed;
                 sliderMining.maxValue = delay;
                 sliderMining.value = 0;
@@ -84,6 +76,7 @@ public class DrillerBehaviour : Controller
                     sliderMining.value = elapsedTime;
                     yield return null;
                 }
+
                 inventoryMiner.Count++;
                 inventoryMiner.Data = _p.ScriptableObject;
                 inventoryMiner.Img1.sprite = _p.ScriptableObject.sprite;

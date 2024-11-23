@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 public class Settings : MonoBehaviour
 {
-    [SerializeField] private TMP_Dropdown graphicsDropdown;
-    [SerializeField] private Slider masterVol, musicVol, sfxVol;
-    [SerializeField] private AudioMixer mainAudioMixer;
-    [SerializeField] private GameObject panelSettings;
+    [SerializeField] TMP_Dropdown graphicsDropdown;
+    [SerializeField] Slider masterVol, musicVol, sfxVol;
+    [SerializeField] AudioMixer mainAudioMixer;
+    [SerializeField] GameObject panelSettings;
+
     public void ChangeGraphicsQuality()
     {
         QualitySettings.SetQualityLevel(graphicsDropdown.value);
@@ -16,12 +17,14 @@ public class Settings : MonoBehaviour
 
     public void ChangeMasterVolume()
     {
-        mainAudioMixer.SetFloat("MasterVolume", Mathf.Log10(masterVol.value)*20);
+        mainAudioMixer.SetFloat("MasterVolume", Mathf.Log10(masterVol.value) * 20);
     }
+
     public void ChangeMusicVolume()
     {
-        mainAudioMixer.SetFloat("MusicVolume", Mathf.Log10(musicVol.value)* 20);
+        mainAudioMixer.SetFloat("MusicVolume", Mathf.Log10(musicVol.value) * 20);
     }
+
     public void ChangeSFXVolume()
     {
         mainAudioMixer.SetFloat("SFXVolume", Mathf.Log10(sfxVol.value) * 20);

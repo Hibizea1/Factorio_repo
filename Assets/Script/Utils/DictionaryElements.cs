@@ -1,9 +1,8 @@
-using UnityEngine;
+using System;
 
-[System.Serializable]
+[Serializable]
 public class DictionaryElements<Key, Value>
 {
     public Key key;
     public Value value;
-    
 }

@@ -6,50 +6,7 @@ using UnityEngine.UI;
 
 public class GemController : Controller
 {
-    #region Variables
-
-    //Float and Int and Enum
-    [Header("Float and Int")] [SerializeField]
-    private int HeatResistance;
-
-    [SerializeField] private float GemCrafterSpeed;
-    [SerializeField] private float EndTimer;
-    [SerializeField] private float Timer = 0;
-    private float adjustedGemCrafterSpeed;
-    private int gemNumber = 0;
-
-    private float blueGemDropChance;
-    private float redGemDropChance;
-    private float yellowGemDropChance;
-    private float purpleGemDropChance;
-
-    [SerializeField] private List<ItemData> GemResult = new List<ItemData>();
-    private Dictionary<string, float> gems = new();
-
-    //Getter
-    public float EndTimer1 => EndTimer;
-    public BuildingRarity Rarity { get; set; }
-
-    //Script
-    [Header("Script")] 
-    [SerializeField] private ItemData InputItem;
-    private ItemData result;
-    private BuildUi buildUi;
-
-    //Unity Component
-    [Header("Unity Component")] [SerializeField]
-    private Slider TimerSlider;
-
-    [SerializeField] private DefaultSlot IngredientSlot;
-    [SerializeField] private List<DefaultSlot> ResultSlots;
-    [SerializeField] private TextMeshProUGUI HeatResistanceText;
-    [SerializeField] private TextMeshProUGUI HeatSpeedText;
-
-    private Coroutine process;
-
-    #endregion
-
-    private void Start()
+    void Start()
     {
         IngredientSlot.ItemAccepted = InputItem;
         TimerSlider.maxValue = EndTimer1;
@@ -59,7 +16,7 @@ public class GemController : Controller
         SetCraftByRarity();
     }
 
-    private void Update()
+    void Update()
     {
         if (IngredientSlot.Data != null && IngredientSlot.Count > 0)
         {
@@ -82,34 +39,7 @@ public class GemController : Controller
 
     #endregion
 
-    #region Get Item GemCrafter
-
-    public override ItemData GetItemData()
-    {
-        // if (ResultSlot.Count <= 0)
-        // {
-        //     ResultSlot.Data = null;
-        // }
-        // else
-        // {
-        //     ResultSlot.Count--;
-        // }
-        //
-        // return ResultSlot.Data;
-        return null;
-    }
-
-    public override int GetItemCount()
-    {
-        // int count = ResultSlot.Count;
-        // ResultSlot.Count = 0;
-        // return count;
-        return 0;
-    }
-
-    #endregion
-
-    private IEnumerator GemCrafterConverter()
+    IEnumerator GemCrafterConverter()
     {
         if (Timer <= EndTimer)
         {
@@ -121,25 +51,18 @@ public class GemController : Controller
             List<ItemData> craftedGems = new List<ItemData>();
 
 
-            float randomValue = Random.Range(0f, 1f);
-            foreach (var gem in gems)
-            {
+            var randomValue = Random.Range(0f, 1f);
+            foreach (KeyValuePair<string, float> gem in gems)
                 if (randomValue <= gem.Value)
                 {
-                    ItemData craftedGem = GemResult.Find(g => g.name == gem.Key);
-                    if (craftedGem != null)
-                    {
-                        craftedGems.Add(craftedGem);
-                    }
+                    var craftedGem = GemResult.Find(g => g.name == gem.Key);
+                    if (craftedGem != null) craftedGems.Add(craftedGem);
                 }
-            }
+
             craftedGems.Reverse();
             IngredientSlot.Count--;
 
-            for (int i = 0; i < craftedGems.Count; i++)
-            {
-                ResultSlots[i].SetItemForCraft(craftedGems[i], 1);
-            }
+            for (var i = 0; i < craftedGems.Count; i++) ResultSlots[i].SetItemForCraft(craftedGems[i], 1);
 
             craftedGems.Clear();
             Timer = 0;
@@ -148,7 +71,7 @@ public class GemController : Controller
         yield return null;
     }
 
-    private void TimerForCrafting()
+    void TimerForCrafting()
     {
         adjustedGemCrafterSpeed = GemCrafterSpeed * (1 + VolcanoController.Instance.CurrentVolcanoHeat1 / 100f);
         HeatSpeedText.text = Mathf.Round(adjustedGemCrafterSpeed).ToString();
@@ -157,7 +80,7 @@ public class GemController : Controller
     }
 
 
-    private void SetCraftByRarity()
+    void SetCraftByRarity()
     {
         gems.Clear();
         switch (Rarity)
@@ -197,4 +120,75 @@ public class GemController : Controller
                 break;
         }
     }
+
+    #region Variables
+
+    //Float and Int and Enum
+    [Header("Float and Int")] [SerializeField]
+    int HeatResistance;
+
+    [SerializeField] float GemCrafterSpeed;
+    [SerializeField] float EndTimer;
+    [SerializeField] float Timer;
+    float adjustedGemCrafterSpeed;
+    int gemNumber;
+
+    float blueGemDropChance;
+    float redGemDropChance;
+    float yellowGemDropChance;
+    float purpleGemDropChance;
+
+    [SerializeField] List<ItemData> GemResult = new List<ItemData>();
+    readonly Dictionary<string, float> gems = new Dictionary<string, float>();
+
+    //Getter
+    public float EndTimer1 => EndTimer;
+
+    public BuildingRarity Rarity { get; set; }
+
+    //Script
+    [Header("Script")] [SerializeField] ItemData InputItem;
+
+    ItemData result;
+    BuildUi buildUi;
+
+    //Unity Component
+    [Header("Unity Component")] [SerializeField]
+    Slider TimerSlider;
+
+    [SerializeField] DefaultSlot IngredientSlot;
+    [SerializeField] List<DefaultSlot> ResultSlots;
+    [SerializeField] TextMeshProUGUI HeatResistanceText;
+    [SerializeField] TextMeshProUGUI HeatSpeedText;
+
+    Coroutine process;
+
+    #endregion
+
+    #region Get Item GemCrafter
+
+    public override ItemData GetItemData()
+    {
+        // if (ResultSlot.Count <= 0)
+        // {
+        //     ResultSlot.Data = null;
+        // }
+        // else
+        // {
+        //     ResultSlot.Count--;
+        // }
+        //
+        // return ResultSlot.Data;
+        return null;
+    }
+
+    public override int GetItemCount()
+    {
+        // int count = ResultSlot.Count;
+        // ResultSlot.Count = 0;
+        // return count;
+        return 0;
+    }
+
+    #endregion
 }

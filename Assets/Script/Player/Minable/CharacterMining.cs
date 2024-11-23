@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class CharacterMining : MonoBehaviour
 {
-    [SerializeField] private float miningSpeed;
-    [SerializeField] private int range;
-    [SerializeField] private Slider slider;
-    private Inventory _inventory;
-    private Coroutine _mine;
-    private bool _isMining;
+    [SerializeField] float miningSpeed;
+    [SerializeField] int range;
+    [SerializeField] Slider slider;
+    Inventory _inventory;
+    bool _isMining;
+    Coroutine _mine;
 
-    private void Start()
+    void Start()
     {
         slider.gameObject.SetActive(false);
         _inventory = Inventory.SInstance;
@@ -20,10 +20,7 @@ public class CharacterMining : MonoBehaviour
 
     public void OnMiningPerformed(InputAction.CallbackContext context)
     {
-        if (context.performed)
-        {
-            _mine = StartCoroutine(Mine());
-        }
+        if (context.performed) _mine = StartCoroutine(Mine());
     }
 
     public void OnMiningCanceled(InputAction.CallbackContext context)
@@ -36,19 +33,19 @@ public class CharacterMining : MonoBehaviour
         }
     }
 
-    private IEnumerator Mine()
+    IEnumerator Mine()
     {
         if (Camera.main != null)
         {
-            Collider2D mouseCollision = Physics2D.OverlapCircle(Camera.main.ScreenToWorldPoint(Input.mousePosition), 0.1f);
+            var mouseCollision = Physics2D.OverlapCircle(Camera.main.ScreenToWorldPoint(Input.mousePosition), 0.1f);
             if (mouseCollision != null &&
                 RangeAndTag(mouseCollision.transform))
             {
-                if (mouseCollision.TryGetComponent<Pickeable>(out Pickeable p) &&
+                if (mouseCollision.TryGetComponent(out Pickeable p) &&
                     mouseCollision.transform.CompareTag("Minable"))
                 {
                     slider.gameObject.SetActive(true);
-                    float delay = p.delay;
+                    var delay = p.delay;
                     delay = delay * miningSpeed;
                     slider.maxValue = delay;
                     slider.value = 0;
@@ -61,13 +58,13 @@ public class CharacterMining : MonoBehaviour
                         yield return null;
                     }
 
-                    _inventory.AddItem(p.ScriptableObject, 1);
+                    _inventory.AddItem(p.ScriptableObject);
                     _mine = StartCoroutine(Mine());
                 }
-                else if (mouseCollision.TryGetComponent<Pickeable>(out Pickeable t) &&
+                else if (mouseCollision.TryGetComponent(out Pickeable t) &&
                          mouseCollision.transform.CompareTag("Build"))
                 {
-                    float delay = t.delay;
+                    var delay = t.delay;
                     delay = delay * miningSpeed;
                     slider.maxValue = delay;
                     slider.value = 0;
@@ -80,7 +77,7 @@ public class CharacterMining : MonoBehaviour
                         yield return null;
                     }
 
-                    _inventory.AddItem(t.ScriptableObject, 1);
+                    _inventory.AddItem(t.ScriptableObject);
                     Destroy(t.gameObject);
                     _mine = StartCoroutine(Mine());
                 }
@@ -93,7 +90,7 @@ public class CharacterMining : MonoBehaviour
 
     }
 
-    private bool RangeAndTag(Transform pos)
+    bool RangeAndTag(Transform pos)
     {
         return Vector3.Distance(pos.position, transform.position) <= range &&
                (pos.CompareTag("Minable") || pos.CompareTag("Build"));

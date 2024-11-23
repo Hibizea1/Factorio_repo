@@ -1,128 +1,122 @@
-using System;
+#region
+
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FurnaceController : Controller
+#endregion
+
+namespace Script.Building.Furnace
 {
-    //Float and Int
-    [Header("Float and Int")] [SerializeField]
-    private int HeatResistance;
-    
-    [SerializeField] private float FurnaceSpeed;
-    [SerializeField] private float EndTimer;
-    private float timer = 0;
-
-
-    //Getter
-    public float EndTimer1 => EndTimer;
-
-    //Script
-    [SerializeField] private FurnaceCraft selectedCraft;
-    private BuildUi buildUi;
-    private FurnacePanelInfo panelInfo;
-
-    //Unity Component
-    private Slider timerSlider;
-    private TMP_Dropdown dropdown;
-    private DefaultSlot ingredientSlot;
-    private DefaultSlot resultSlot;
-    private TextMeshProUGUI heatResistanceText;
-    private TextMeshProUGUI heatSpeedText;
-
-    private void Start()
+    public class FurnaceController : Controller
     {
-        //Get Component From UI
-        panelInfo = GetComponent<BuildUi>().OpenPrefab.GetComponent<FurnacePanelInfo>();
-        timerSlider = panelInfo.Slider1;
-        dropdown = panelInfo.DropDown1;
-        ingredientSlot = panelInfo.IngredientSlot1;
-        resultSlot = panelInfo.ResultSlot1;
-        heatSpeedText = panelInfo.HeatSpeedText1;
-        heatResistanceText = panelInfo.HeatResistanceText1;
+        //Float and Int
+        [Header("Float and Int")] [SerializeField]
+        int heatResistance;
 
-        timerSlider.maxValue = EndTimer1;
-        heatResistanceText.text = HeatResistance.ToString();
-        heatSpeedText.text = Mathf.Round(FurnaceSpeed).ToString();
-    }
+        [SerializeField] float furnaceSpeed;
+        [SerializeField] float endTimer;
 
-    private void Update()
-    {
-        FurnaceHeating();
-        GetCraft();
-    }
+        //Script
+        [SerializeField] FurnaceCraft selectedCraft;
+        BuildUi _buildUi;
+        TMP_Dropdown _dropdown;
+        TextMeshProUGUI _heatResistanceText;
+        TextMeshProUGUI _heatSpeedText;
+        DefaultSlot _ingredientSlot;
+        FurnacePanelInfo _panelInfo;
+        DefaultSlot _resultSlot;
+        float _timer;
 
-    public override ItemData GetItemData()
-    {
-        if (resultSlot.Count <= 0)
+        //Unity Component
+        Slider _timerSlider;
+
+
+        //Getter
+        public float EndTimer1 => endTimer;
+
+        void Start()
         {
-            resultSlot.Data = null;
-        }
-        else
-        {
-            resultSlot.Count--;
+            //Get Component From UI
+            _panelInfo = GetComponent<BuildUi>().OpenPrefab.GetComponent<FurnacePanelInfo>();
+            _timerSlider = _panelInfo.Slider1;
+            _dropdown = _panelInfo.DropDown1;
+            _ingredientSlot = _panelInfo.IngredientSlot1;
+            _resultSlot = _panelInfo.ResultSlot1;
+            _heatSpeedText = _panelInfo.HeatSpeedText1;
+            _heatResistanceText = _panelInfo.HeatResistanceText1;
+
+            _timerSlider.maxValue = EndTimer1;
+            _heatResistanceText.text = heatResistance.ToString();
+            _heatSpeedText.text = Mathf.Round(furnaceSpeed).ToString();
         }
 
-        return resultSlot.GetItemFromSlot();
-    }
-
-    public override int GetItemCount()
-    {
-        int count = resultSlot.GetCountFromSlot();
-        resultSlot.Count = 0;
-        return count;
-    }
-
-    public override void SetItemCountForMultiSlot(int _count, ItemData _data)
-    {
-        ingredientSlot.SetItemForCraft(_data, _count);
-    }
-
-    private void GetCraft()
-    {
-        selectedCraft = dropdown.gameObject.GetComponent<GetValueFromDropDownFurnace>().FurnaceCraft;
-        if (selectedCraft != null)
+        void Update()
         {
-            ingredientSlot.ItemAccepted = selectedCraft.InputItem;
-            ingredientSlot.CountNeeded = 1;
-            Debug.Log("Item Accepted : " + ingredientSlot.ItemAccepted);
+            FurnaceHeating();
+            GetCraft();
         }
-    }
 
-    public override bool HasCraftSelected()
-    {
-        if (selectedCraft != null)
+        public override ItemData GetItemData()
         {
-            return true;
+            if (_resultSlot.Count <= 0)
+                _resultSlot.Data = null;
+            else
+                _resultSlot.Count--;
+
+            return _resultSlot.GetItemFromSlot();
         }
-        else
+
+        public override int GetItemCount()
         {
+            var count = _resultSlot.GetCountFromSlot();
+            _resultSlot.Count = 0;
+            return count;
+        }
+
+        public override void SetItemCountForMultiSlot(int _count, ItemData _data)
+        {
+            _ingredientSlot.SetItemForCraft(_data, _count);
+        }
+
+        void GetCraft()
+        {
+            selectedCraft = _dropdown.gameObject.GetComponent<GetValueFromDropDownFurnace>().FurnaceCraft;
+            if (selectedCraft != null)
+            {
+                _ingredientSlot.ItemAccepted = selectedCraft.InputItem;
+                _ingredientSlot.CountNeeded = 1;
+                Debug.Log("Item Accepted : " + _ingredientSlot.ItemAccepted);
+            }
+        }
+
+        public override bool HasCraftSelected()
+        {
+            if (selectedCraft != null)
+                return true;
             return false;
         }
-    }
 
-    private void FurnaceHeating()
-    {
-        if (selectedCraft == null || ingredientSlot.Count == 0) return;
-        
-        if (ingredientSlot.Data == selectedCraft.InputItem)
+        void FurnaceHeating()
         {
-            if (timer <= EndTimer)
+            if (selectedCraft == null || _ingredientSlot.Count == 0) return;
+
+            if (_ingredientSlot.Data == selectedCraft.InputItem)
             {
-                heatSpeedText.text = Mathf.Round(FurnaceSpeed).ToString();
-                timer += FurnaceSpeed * Time.deltaTime;
-                timerSlider.value = timer;
-            }
-            else
-            {
-                resultSlot.SetItemForCraft(selectedCraft.OutputItem, 1);
-                ingredientSlot.Count -= 1;
-                Debug.Log("Crafted");
-                timer = 0;
-                timerSlider.value = timer;
-                if (ingredientSlot.Count <= 0)
+                if (_timer <= endTimer)
                 {
-                    ingredientSlot.Data = null;
+                    _heatSpeedText.text = Mathf.Round(furnaceSpeed).ToString();
+                    _timer += furnaceSpeed * Time.deltaTime;
+                    _timerSlider.value = _timer;
+                }
+                else
+                {
+                    _resultSlot.SetItemForCraft(selectedCraft.OutputItem, 1);
+                    _ingredientSlot.Count -= 1;
+                    Debug.Log("Crafted");
+                    _timer = 0;
+                    _timerSlider.value = _timer;
+                    if (_ingredientSlot.Count <= 0) _ingredientSlot.Data = null;
                 }
             }
         }

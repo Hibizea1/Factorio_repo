@@ -7,16 +7,17 @@ public class FurnaceDataManager : MonoBehaviour
 {
     public static FurnaceDataManager SInstance;
 
-    public List<FurnaceCraft> Crafts = new();
+    public List<FurnaceCraft> Crafts = new List<FurnaceCraft>();
     public Action FurnaceCraftEvent;
 
-    private void Awake()
+    void Awake()
     {
         SInstance = this;
     }
+
     public void AddCraft(FurnaceCraft NewCraft)
     {
-        if (Crafts.Contains(NewCraft)) { return; }
+        if (Crafts.Contains(NewCraft)) return;
 
         Crafts.Add(NewCraft);
         FurnaceCraftEvent?.Invoke();

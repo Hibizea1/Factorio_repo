@@ -1,29 +1,12 @@
-using System;
+#region
+
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
+
+#endregion
 
 public class BeltController : MonoBehaviour
 {
-    [SerializeField] private float BeltSpeed;
-    [SerializeField] private GameObject WaypointPrefab; // Un seul prefab pour tous les waypoints
-    [SerializeField] private LayerMask LayerMask;
-
-    private ItemData transportedItem;
-    private int countItem;
-
-    private List<PathNode> pathNodes = new();
-    private HashSet<Vector3> occupiedPositions = new();
-    [SerializeField] private float WaitingTime = 0;
-    [SerializeField] private int Wait = 5;
-    [SerializeField] private int CurrentNodeIndex = 0;
-    private bool pathValidated = false;
-    private bool isDrawingPath = false;
-    private bool isStopped = false;
-
-    public static BeltController SelectedBelt { get; set; }
-
     public enum PathType
     {
         Fill,
@@ -31,20 +14,32 @@ public class BeltController : MonoBehaviour
         Follow
     }
 
-    private PathType selectedPathType = PathType.Follow;
+    [SerializeField] float BeltSpeed;
+    [SerializeField] GameObject WaypointPrefab; // Un seul prefab pour tous les waypoints
+    [SerializeField] LayerMask LayerMask;
+    [SerializeField] float WaitingTime;
+    [SerializeField] int Wait = 5;
+    [SerializeField] int CurrentNodeIndex;
+    readonly HashSet<Vector3> occupiedPositions = new HashSet<Vector3>();
 
-    private void Start()
+    readonly List<PathNode> pathNodes = new List<PathNode>();
+    int countItem;
+    bool isDrawingPath;
+    bool isStopped;
+    bool pathValidated;
+
+    PathType selectedPathType = PathType.Follow;
+
+    ItemData transportedItem;
+
+    public static BeltController SelectedBelt { get; set; }
+
+    void Start()
     {
         CreateInitialNode();
     }
 
-    private void CreateInitialNode()
-    {
-        Vector3 startPosition = transform.position;
-        AddNode(startPosition, PathType.Fill);
-    }
-
-    private void Update()
+    void Update()
     {
         if (Input.GetKeyDown(KeyCode.F))
         {
@@ -62,23 +57,15 @@ public class BeltController : MonoBehaviour
             Debug.Log(selectedPathType);
         }
 
-        if (Input.GetMouseButtonDown(0) && !pathValidated && SelectedBelt == this)
-        {
-            isDrawingPath = true;
-        }
+        if (Input.GetMouseButtonDown(0) && !pathValidated && SelectedBelt == this) isDrawingPath = true;
 
-        if (Input.GetMouseButtonUp(0) && !pathValidated)
-        {
-            isDrawingPath = false;
-        }
+        if (Input.GetMouseButtonUp(0) && !pathValidated) isDrawingPath = false;
 
         if (isDrawingPath && !pathValidated)
         {
-            Vector3 newNodePosition = GetMousePositionRounded();
+            var newNodePosition = GetMousePositionRounded();
             if (newNodePosition != Vector3.zero && CanAddNode(newNodePosition))
-            {
                 AddNode(newNodePosition, selectedPathType);
-            }
         }
 
         if (Input.GetKeyDown(KeyCode.E))
@@ -94,18 +81,12 @@ public class BeltController : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(1) && !pathValidated)
-        {
-            RemoveNodeAtPosition(GetMousePositionRounded());
-        }
+        if (Input.GetMouseButtonDown(1) && !pathValidated) RemoveNodeAtPosition(GetMousePositionRounded());
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            RotateNodeAtPosition(GetMousePositionRounded());
-        }
+        if (Input.GetKeyDown(KeyCode.R)) RotateNodeAtPosition(GetMousePositionRounded());
 
         MoveCart();
-        
+
         if (isStopped)
         {
             WaitingTime += Time.deltaTime;
@@ -117,51 +98,50 @@ public class BeltController : MonoBehaviour
         }
     }
 
-    private void MoveCart()
+    void OnDestroy()
     {
-        if (!isStopped)
-        {
-            if (pathValidated && pathNodes.Count > 1)
-            {
-                MoveAlongPath();
-            }
-        }
+        foreach (var node in pathNodes) Destroy(node.NodeObject);
     }
 
-    private Vector3 GetMousePositionRounded()
+    void CreateInitialNode()
     {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var startPosition = transform.position;
+        AddNode(startPosition, PathType.Fill);
+    }
+
+    void MoveCart()
+    {
+        if (!isStopped)
+            if (pathValidated && pathNodes.Count > 1)
+                MoveAlongPath();
+    }
+
+    Vector3 GetMousePositionRounded()
+    {
+        var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition = new Vector3(
             Mathf.Round(mousePosition.x),
             Mathf.Round(mousePosition.y),
             0
         );
-        if (mousePosition.x % 2 != 0)
-        {
-            mousePosition.x++;
-        }
+        if (mousePosition.x % 2 != 0) mousePosition.x++;
 
-        if (mousePosition.y % 2 != 0)
-        {
-            mousePosition.y++;
-        }
+        if (mousePosition.y % 2 != 0) mousePosition.y++;
 
         return mousePosition;
     }
 
-    private void RotateNodeAtPosition(Vector3 position)
+    void RotateNodeAtPosition(Vector3 position)
     {
-        foreach (PathNode node in pathNodes)
-        {
+        foreach (var node in pathNodes)
             if (node.Position == position)
             {
                 node.NodeObject.GetComponent<Waypoint>().RotateRail();
                 break;
             }
-        }
     }
 
-    private void AddNode(Vector3 position, PathType type)
+    void AddNode(Vector3 position, PathType type)
     {
         if (IsOccupied(position))
         {
@@ -169,51 +149,43 @@ public class BeltController : MonoBehaviour
             return;
         }
 
-        GameObject newWaypoint = Instantiate(WaypointPrefab, position, Quaternion.identity);
+        var newWaypoint = Instantiate(WaypointPrefab, position, Quaternion.identity);
         MarkOccupiedArea(position);
 
 
         pathNodes.Add(new PathNode(position, type, newWaypoint));
     }
 
-    private bool IsOccupied(Vector3 position)
+    bool IsOccupied(Vector3 position)
     {
-        for (int x = -1; x <= 0; x += 1)
+        for (var x = -1; x <= 0; x += 1)
+        for (var y = -1; y <= 0; y += 1)
         {
-            for (int y = -1; y <= 0; y += 1)
-            {
-                Vector3 checkPosition = position + new Vector3(x, y, 0);
-                if (occupiedPositions.Contains(checkPosition))
-                {
-                    return true;
-                }
-            }
+            var checkPosition = position + new Vector3(x, y, 0);
+            if (occupiedPositions.Contains(checkPosition)) return true;
         }
 
         return false;
     }
 
-    private void MarkOccupiedArea(Vector3 position)
+    void MarkOccupiedArea(Vector3 position)
     {
-        for (int x = -1; x <= 0; x += 1)
+        for (var x = -1; x <= 0; x += 1)
+        for (var y = -1; y <= 0; y += 1)
         {
-            for (int y = -1; y <= 0; y += 1)
-            {
-                Vector3 checkPosition = position + new Vector3(x, y, 0);
-                occupiedPositions.Add(checkPosition);
-            }
+            var checkPosition = position + new Vector3(x, y, 0);
+            occupiedPositions.Add(checkPosition);
         }
     }
 
-    private bool CanAddNode(Vector3 position)
+    bool CanAddNode(Vector3 position)
     {
         return !IsOccupied(position);
     }
 
-    private void RemoveNodeAtPosition(Vector3 position)
+    void RemoveNodeAtPosition(Vector3 position)
     {
         foreach (var node in pathNodes)
-        {
             if (node.Position == position)
             {
                 UnmarkOccupiedArea(position);
@@ -221,26 +193,23 @@ public class BeltController : MonoBehaviour
                 pathNodes.Remove(node);
                 break;
             }
-        }
     }
 
-    private void UnmarkOccupiedArea(Vector3 position)
+    void UnmarkOccupiedArea(Vector3 position)
     {
-        for (int x = -1; x <= 0; x += 1)
+        for (var x = -1; x <= 0; x += 1)
+        for (var y = -1; y <= 0; y += 1)
         {
-            for (int y = -1; y <= 0; y += 1)
-            {
-                Vector3 checkPosition = position + new Vector3(x * 1, y * 1, 0);
-                occupiedPositions.Remove(checkPosition);
-            }
+            var checkPosition = position + new Vector3(x * 1, y * 1, 0);
+            occupiedPositions.Remove(checkPosition);
         }
     }
 
-    private void MoveAlongPath()
+    void MoveAlongPath()
     {
         if (pathNodes.Count == 0) return;
 
-        PathNode currentNode = pathNodes[CurrentNodeIndex];
+        var currentNode = pathNodes[CurrentNodeIndex];
         transform.position = Vector3.MoveTowards(transform.position, currentNode.Position, BeltSpeed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, currentNode.Position) <= 0.1f)
@@ -258,7 +227,7 @@ public class BeltController : MonoBehaviour
         }
     }
 
-    private void CheckNodeType()
+    void CheckNodeType()
     {
         switch (pathNodes[CurrentNodeIndex].Type)
         {
@@ -276,18 +245,16 @@ public class BeltController : MonoBehaviour
         }
     }
 
-    private void FillCart()
+    void FillCart()
     {
         Collider2D[] collider = Physics2D.OverlapCircleAll(transform.position, 1, LayerMask);
 
         float waitingTime = 0;
-        int wait = 5;
+        var wait = 5;
 
 
         if (collider != null)
-        {
-            for (int i = 0; i < collider.Length; i++)
-            {
+            for (var i = 0; i < collider.Length; i++)
                 if (collider[i].gameObject != gameObject && collider[i].TryGetComponent(out Controller c))
                 {
                     transportedItem = c.GetItemData();
@@ -295,85 +262,54 @@ public class BeltController : MonoBehaviour
                     Debug.Log("retrieve item");
 
                 }
-            }
-        }
     }
 
-    private void EmptyCart()
+    void EmptyCart()
     {
         Collider2D[] collider = Physics2D.OverlapCircleAll(transform.position, 1, LayerMask);
         float waitingTime = 0;
-        int wait = 5;
+        var wait = 5;
         if (collider != null)
-        {
-            for (int i = 0; i < collider.Length; i++)
-            {
+            for (var i = 0; i < collider.Length; i++)
                 if (collider[i].gameObject != gameObject && collider[i].TryGetComponent(out Controller c))
                 {
                     c.SetItemCountForMultiSlot(countItem, transportedItem);
                     countItem = 0;
                     Debug.Log("empty item");
                 }
-            }
-        }
     }
 
-    private bool IsPathClosed()
+    bool IsPathClosed()
     {
         if (pathNodes.Count < 3) return false;
 
-        Vector3 firstNode = pathNodes[0].Position;
-        Vector3 lastNode = pathNodes[pathNodes.Count - 1].Position;
+        var firstNode = pathNodes[0].Position;
+        var lastNode = pathNodes[pathNodes.Count - 1].Position;
 
         return Vector3.Distance(firstNode, lastNode) <= 2f;
     }
 
-    public class PathNode
-    {
-        public Vector3 Position { get; }
-        public PathType Type { get; set; }
-        public GameObject NodeObject { get; }
-
-        public PathNode(Vector3 position, PathType type, GameObject nodeObject)
-        {
-            Position = position;
-            Type = type;
-            NodeObject = nodeObject;
-        }
-    }
-
     public int GetNodeIndex(Vector3 position)
     {
-        for (int i = 0; i < pathNodes.Count; i++)
-        {
+        for (var i = 0; i < pathNodes.Count; i++)
             if (pathNodes[i].Position == position)
-            {
                 return i;
-            }
-        }
 
         return -1;
     }
 
     public PathType GetNodeType(Vector3 position)
     {
-        for (int i = 0; i < pathNodes.Count; i++)
-        {
+        for (var i = 0; i < pathNodes.Count; i++)
             if (pathNodes[i].Position == position)
-            {
                 return pathNodes[i].Type;
-            }
-        }
 
         return PathType.Follow;
     }
 
     public Vector3 GetNodePosition(int index)
     {
-        if (index >= 0 && index < pathNodes.Count)
-        {
-            return pathNodes[index].Position;
-        }
+        if (index >= 0 && index < pathNodes.Count) return pathNodes[index].Position;
 
         return Vector3.zero;
     }
@@ -383,11 +319,19 @@ public class BeltController : MonoBehaviour
         return pathNodes.Count;
     }
 
-    private void OnDestroy()
+    public class PathNode
     {
-        foreach (var node in pathNodes)
+        public PathNode(Vector3 position, PathType type, GameObject nodeObject)
         {
-            Destroy(node.NodeObject);
+            Position = position;
+            Type = type;
+            NodeObject = nodeObject;
         }
+
+        public Vector3 Position { get; }
+
+        public PathType Type { get; set; }
+
+        public GameObject NodeObject { get; }
     }
 }

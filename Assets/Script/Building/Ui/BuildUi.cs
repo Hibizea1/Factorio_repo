@@ -3,26 +3,26 @@ using UnityEngine;
 [DefaultExecutionOrder(-10)]
 public class BuildUi : MonoBehaviour
 {
-    [SerializeField] private GameObject PanelPrefab;
-    private GameObject openPrefab;
+    [SerializeField] GameObject PanelPrefab;
 
     public GameObject PanelPrefab1 => PanelPrefab;
-    public GameObject OpenPrefab => openPrefab;
 
-    private void Start()
+    public GameObject OpenPrefab { get; private set; }
+
+    void Start()
     {
-        openPrefab = Instantiate(PanelPrefab, GetPanel.Instance.transform.position, Quaternion.identity,
+        OpenPrefab = Instantiate(PanelPrefab, GetPanel.Instance.transform.position, Quaternion.identity,
             GetPanel.Instance.transform);
-        GetPanel.Instance.AddPanelToOpen(openPrefab);
+        GetPanel.Instance.AddPanelToOpen(OpenPrefab);
+    }
+
+    void OnDestroy()
+    {
+        Destroy(OpenPrefab);
     }
 
     public void OpenUI()
     {
-        openPrefab.transform.GetChild(0).gameObject.SetActive(!openPrefab.transform.GetChild(0).gameObject.activeSelf);
-    }
-
-    private void OnDestroy()
-    {
-        Destroy(openPrefab);
+        OpenPrefab.transform.GetChild(0).gameObject.SetActive(!OpenPrefab.transform.GetChild(0).gameObject.activeSelf);
     }
 }

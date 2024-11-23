@@ -6,41 +6,35 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
-    [SerializeField] private List<DefaultSlot> items = new List<DefaultSlot>();
-    [SerializeField] private GameObject inventoryPanel; // root inventory panel
+    const int inventorySize = 9;
+    [SerializeField] List<DefaultSlot> items = new List<DefaultSlot>();
+    [SerializeField] GameObject inventoryPanel; // root inventory panel
+    [SerializeField] GameObject content;
 
     public GameObject InventoryPanel => inventoryPanel;
 
-    const int inventorySize = 9;
-    [SerializeField] GameObject content;
 
-    
     public static Inventory SInstance { get; private set; }
-    private void Awake()
+
+    void Awake()
     {
         if (SInstance == null)
-        {
             SInstance = this;
-        }
         else
-        {
             Destroy(this);
-        }
     }
 
-    private void Start()
+    void Start()
     {
-        for (int i = 0; i < content.transform.childCount; i++)
-        {
+        for (var i = 0; i < content.transform.childCount; i++)
             items.Add(content.transform.GetChild(i).GetComponent<DefaultSlot>());
-        }
 
         RefreshContent();
     }
 
     public void AddItem(ItemData item, int count = 1)
     {
-        var slot = items.Where(x => x.Data == item).ToList();
+        List<DefaultSlot> slot = items.Where(x => x.Data == item).ToList();
 
         if (slot.Any())
         {
@@ -63,12 +57,10 @@ public class Inventory : MonoBehaviour
         RefreshContent();
     }
 
-   
-
 
     public void RemoveItem(ItemData item, int count)
     {
-        var slot = items.Where(x => x.Data == item).ToList();
+        List<DefaultSlot> slot = items.Where(x => x.Data == item).ToList();
 
         if (slot.Any())
         {
@@ -93,11 +85,11 @@ public class Inventory : MonoBehaviour
 
     public void RefreshContent()
     {
-        for (int i = 0; i < items.Count; i++)
+        for (var i = 0; i < items.Count; i++)
         {
             if (items[i].Data == null) return;
 
-            Image img = items[i].transform.GetChild(1).GetComponent<Image>();
+            var img = items[i].transform.GetChild(1).GetComponent<Image>();
 
             if (items[i].Count >= 1)
             {
@@ -130,16 +122,14 @@ public class Inventory : MonoBehaviour
 
     public bool ContentItem(ItemData data, int count)
     {
-        foreach (DefaultSlot item in items) 
-        {
-            if (item.Data == data && item.Count >= count) return true;
-        }
+        foreach (var item in items)
+            if (item.Data == data && item.Count >= count)
+                return true;
         return false;
     }
-    
-    public void OpenAndCloseInventory(InputAction.CallbackContext context) 
+
+    public void OpenAndCloseInventory(InputAction.CallbackContext context)
     {
         inventoryPanel.SetActive(!inventoryPanel.activeSelf);
     }
 }
-

@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class OverSelected : MonoBehaviour
 {
-    private GameObject currentBuilding; 
+    GameObject currentBuilding;
 
     void Update()
     {
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Collider2D hitCollider = Physics2D.OverlapPoint(mousePos);
+        var hitCollider = Physics2D.OverlapPoint(mousePos);
 
         if (hitCollider != null && hitCollider.CompareTag("Build") && hitCollider.CompareTag("Minable"))
         {
@@ -24,7 +24,7 @@ public class OverSelected : MonoBehaviour
         }
     }
 
-    private void ClearCurrentBuilding()
+    void ClearCurrentBuilding()
     {
         if (currentBuilding != null)
         {

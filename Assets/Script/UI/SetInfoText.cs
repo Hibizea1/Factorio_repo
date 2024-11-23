@@ -1,27 +1,21 @@
-using System;
 using TMPro;
 using UnityEngine;
 
 public class SetInfoText : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI NameText;
-    [SerializeField] private TextMeshProUGUI TypeText;
-
     public static SetInfoText SInstance;
-    
-    private void Awake()
+    [SerializeField] TextMeshProUGUI NameText;
+    [SerializeField] TextMeshProUGUI TypeText;
+
+    void Awake()
     {
         if (SInstance == null)
-        {
             SInstance = this;
-        }
         else
-        {
             Destroy(this);
-        }
     }
-    
-    private void Update()
+
+    void Update()
     {
         // transform.position = Input.mousePosition;
     }

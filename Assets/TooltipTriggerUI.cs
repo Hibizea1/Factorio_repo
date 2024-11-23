@@ -1,15 +1,15 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Collections;
 
 public class TooltipTriggerUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [SerializeField] private string Header;
-    [SerializeField] private string Content;
-    private DefaultSlot slot;
-    private Coroutine showTooltipCoroutine;
+    [SerializeField] string Header;
+    [SerializeField] string Content;
+    Coroutine showTooltipCoroutine;
+    DefaultSlot slot;
 
-    private void Start()
+    void Start()
     {
         slot = GetComponent<DefaultSlot>();
     }
@@ -20,10 +20,10 @@ public class TooltipTriggerUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             Header = slot.Data.nameItem;
             Content = slot.Count.ToString();
-            
+
             showTooltipCoroutine = StartCoroutine(ShowTooltipWithDelay());
         }
-        else if(slot.ItemAccepted != null)
+        else if (slot.ItemAccepted != null)
         {
             Header = slot.ItemAccepted.nameItem;
             Content = slot.CountNeeded.ToString();
@@ -43,10 +43,9 @@ public class TooltipTriggerUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
         TooltipSystem.Hide();
     }
 
-    private IEnumerator ShowTooltipWithDelay()
+    IEnumerator ShowTooltipWithDelay()
     {
         yield return new WaitForSeconds(0.5f);
         TooltipSystem.Show(Content, Header);
     }
-
 }

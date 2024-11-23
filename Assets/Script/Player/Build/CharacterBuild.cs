@@ -4,46 +4,43 @@ using UnityEngine.InputSystem;
 
 public class CharacterBuild : MonoBehaviour
 {
-    [SerializeField] private LayerMask placementLayer;
-    [SerializeField] private Color validPlacementColor = new Color(0, 1, 0, 0.5f);
-    [SerializeField] private Color invalidPlacementColor = new Color(1, 0, 0, 0.5f);
-    [SerializeField] private GameObject canva;
+    [SerializeField] LayerMask placementLayer;
+    [SerializeField] Color validPlacementColor = new Color(0, 1, 0, 0.5f);
+    [SerializeField] Color invalidPlacementColor = new Color(1, 0, 0, 0.5f);
+    [SerializeField] GameObject canva;
 
-    private Building _buildingPrefab;
-    private GameObject _previewObject;
-    private Camera _mainCamera;
-    private bool _canPlace;
+    Building _buildingPrefab;
+    bool _canPlace;
+    Camera _mainCamera;
+    GameObject _previewObject;
 
-    private void Awake()
+    void Awake()
     {
         _mainCamera = Camera.main;
         EventMaster.OnBuildingPrefabSet += SetBuildingPrefab;
     }
 
-    private void OnDestroy()
-    {
-        EventMaster.OnBuildingPrefabSet -= SetBuildingPrefab;
-    }
-
-    private void Update()
+    void Update()
     {
         if (_buildingPrefab != null)
         {
             HandlePreview();
-            if (Mouse.current.leftButton.wasPressedThisFrame && _canPlace)
-            {
-                PlaceObject();
-            }
+            if (Mouse.current.leftButton.wasPressedThisFrame && _canPlace) PlaceObject();
         }
     }
 
-    private void SetBuildingPrefab(Building prefab)
+    void OnDestroy()
+    {
+        EventMaster.OnBuildingPrefabSet -= SetBuildingPrefab;
+    }
+
+    void SetBuildingPrefab(Building prefab)
     {
         _buildingPrefab = prefab;
         PreparePreview();
     }
 
-    private void HandlePreview()
+    void HandlePreview()
     {
         if (EventSystem.current.IsPointerOverGameObject())
         {
@@ -53,47 +50,41 @@ public class CharacterBuild : MonoBehaviour
 
         if (!_previewObject.activeSelf) _previewObject.SetActive(true);
 
-        Vector3 mousePosition = GetMousePositionInWorld2D();
+        var mousePosition = GetMousePositionInWorld2D();
         _previewObject.transform.position = mousePosition;
 
         _canPlace = CheckPlacementValidity(mousePosition);
         ChangePreviewColor(_canPlace);
     }
-    
+
     Vector3 GetMousePositionInWorld2D()
     {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition = new Vector3(
             Mathf.Round(mousePosition.x),
             Mathf.Round(mousePosition.y),
             0
         );
-        if (mousePosition.x % 2 != 0)
-        {
-            mousePosition.x++;
-        }
-        if (mousePosition.y % 2 != 0)
-        {
-            mousePosition.y++;
-        }
+        if (mousePosition.x % 2 != 0) mousePosition.x++;
+        if (mousePosition.y % 2 != 0) mousePosition.y++;
 
         return mousePosition;
     }
 
 
-    private bool CheckPlacementValidity(Vector3 position)
+    bool CheckPlacementValidity(Vector3 position)
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(position, 0.5f, placementLayer);
         return colliders.Length == 0;
     }
 
-    private void ChangePreviewColor(bool isValid)
+    void ChangePreviewColor(bool isValid)
     {
-        SpriteRenderer renderer = _previewObject.GetComponent<SpriteRenderer>();
+        var renderer = _previewObject.GetComponent<SpriteRenderer>();
         renderer.color = isValid ? validPlacementColor : invalidPlacementColor;
     }
 
-    private void PlaceObject()
+    void PlaceObject()
     {
         Inventory.SInstance.RemoveItem(_buildingPrefab, 1);
         Instantiate(_buildingPrefab.prefab, GetMousePositionInWorld2D(), Quaternion.identity);
@@ -103,14 +94,14 @@ public class CharacterBuild : MonoBehaviour
         _buildingPrefab = null;
     }
 
-    private void PreparePreview()
+    void PreparePreview()
     {
         if (_previewObject) Destroy(_previewObject);
 
         _previewObject = Instantiate(_buildingPrefab.prefab);
         _previewObject.SetActive(false);
         _previewObject.GetComponent<BoxCollider2D>().enabled = false;
-        SpriteRenderer renderer = _previewObject.GetComponent<SpriteRenderer>();
+        var renderer = _previewObject.GetComponent<SpriteRenderer>();
         renderer.color = invalidPlacementColor;
     }
 }
