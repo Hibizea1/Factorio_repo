@@ -1,5 +1,9 @@
+#region
+
 using System.Collections.Generic;
 using UnityEngine;
+
+#endregion
 
 public class SpawnRequireSlots : MonoBehaviour
 {
@@ -53,7 +57,7 @@ public class SpawnRequireSlots : MonoBehaviour
             color = Color.white;
             color.a = 0.25f;
             defaultSlot.Img1.color = color;
-            defaultSlot.Img1.sprite = RequireSlot1.requires[i].sprite;
+            defaultSlot.Img1.sprite = RequireSlot1.requires[i].Sprite;
         }
     }
 }

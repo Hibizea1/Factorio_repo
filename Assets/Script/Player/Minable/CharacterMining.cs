@@ -1,13 +1,18 @@
+#region
+
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+
+#endregion
 
 public class CharacterMining : MonoBehaviour
 {
     [SerializeField] float miningSpeed;
     [SerializeField] int range;
     [SerializeField] Slider slider;
+    float _delay;
     Inventory _inventory;
     bool _isMining;
     Coroutine _mine;
@@ -28,8 +33,8 @@ public class CharacterMining : MonoBehaviour
         if (context.canceled)
         {
             StopCoroutine(_mine);
-            slider.value = 0;
             slider.gameObject.SetActive(false);
+            slider.value = 0;
         }
     }
 
@@ -44,14 +49,10 @@ public class CharacterMining : MonoBehaviour
                 if (mouseCollision.TryGetComponent(out Pickeable p) &&
                     mouseCollision.transform.CompareTag("Minable"))
                 {
-                    slider.gameObject.SetActive(true);
-                    var delay = p.delay;
-                    delay = delay * miningSpeed;
-                    slider.maxValue = delay;
-                    slider.value = 0;
+                    SetTimerANdValue(p);
                     float elapsedTime = 0;
 
-                    while (elapsedTime < delay)
+                    while (elapsedTime < _delay)
                     {
                         elapsedTime += Time.deltaTime;
                         slider.value = elapsedTime;
@@ -64,13 +65,10 @@ public class CharacterMining : MonoBehaviour
                 else if (mouseCollision.TryGetComponent(out Pickeable t) &&
                          mouseCollision.transform.CompareTag("Build"))
                 {
-                    var delay = t.delay;
-                    delay = delay * miningSpeed;
-                    slider.maxValue = delay;
-                    slider.value = 0;
+                    SetTimerANdValue(t);
                     float elapsedTime = 0;
 
-                    while (elapsedTime < delay)
+                    while (elapsedTime < _delay)
                     {
                         elapsedTime += Time.deltaTime;
                         slider.value = elapsedTime;
@@ -89,6 +87,16 @@ public class CharacterMining : MonoBehaviour
         }
 
     }
+
+    void SetTimerANdValue(Pickeable p)
+    {
+        slider.gameObject.SetActive(true);
+        _delay = p.delay;
+        _delay = _delay * miningSpeed;
+        slider.maxValue = _delay;
+        slider.value = 0;
+    }
+
 
     bool RangeAndTag(Transform pos)
     {

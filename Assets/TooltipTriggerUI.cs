@@ -1,6 +1,10 @@
+#region
+
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+
+#endregion
 
 public class TooltipTriggerUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -18,14 +22,14 @@ public class TooltipTriggerUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
     {
         if (slot.Data != null)
         {
-            Header = slot.Data.nameItem;
+            Header = slot.Data.NameItem;
             Content = slot.Count.ToString();
 
             showTooltipCoroutine = StartCoroutine(ShowTooltipWithDelay());
         }
         else if (slot.ItemAccepted != null)
         {
-            Header = slot.ItemAccepted.nameItem;
+            Header = slot.ItemAccepted.NameItem;
             Content = slot.CountNeeded.ToString();
             showTooltipCoroutine = StartCoroutine(ShowTooltipWithDelay());
         }

@@ -1,5 +1,9 @@
+#region
+
 using UnityEngine;
 using UnityEngine.Serialization;
+
+#endregion
 
 [CreateAssetMenu(fileName = "FurnaceCraft", menuName = "Scriptable Objects/FurnaceCraft")]
 public class FurnaceCraft : ScriptableObject
@@ -12,5 +16,5 @@ public class FurnaceCraft : ScriptableObject
 
     [SerializeField] public int RequiresHeat;
 
-    public Sprite Item2Sprite => OutputItem != null ? OutputItem.sprite : null;
+    public Sprite Item2Sprite => OutputItem != null ? OutputItem.Sprite : null;
 }

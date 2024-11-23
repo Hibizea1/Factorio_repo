@@ -1,52 +1,62 @@
+#region
+
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Image = UnityEngine.UI.Image;
+
+#endregion
 
 
 public class DefaultSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
 {
     public ItemData Data;
     public int Count;
-    [SerializeField] TextMeshProUGUI TextCountItem;
-    [SerializeField] Image Img;
+    [SerializeField] TextMeshProUGUI textCountItem;
+    [SerializeField] Image img;
 
-    [SerializeField] bool CanDropped = true;
+    [SerializeField] bool canDropped = true;
     public bool AcceptAll = true;
-    [SerializeField] bool IsHighlight;
+    [SerializeField] bool isHighlight;
     [HideInInspector] public ItemData ItemAccepted;
     [HideInInspector] public int CountNeeded;
-    Color color = Color.white;
 
-    public Image Img1
-    {
-        get => Img;
-        set => Img = value;
-    }
+    Animation _animator;
+    Color _color = Color.white;
+
+
+    public Image Img1 { get; set; }
 
     public bool IsHighlighted
     {
-        get => IsHighlight;
-        set => IsHighlight = value;
+        get => isHighlight;
+        set => isHighlight = value;
     }
 
     void Start()
     {
-        TextCountItem.text = Count.ToString();
-        color!.a = 0.25f;
+        textCountItem.text = Count.ToString();
+        _animator = img.gameObject.GetComponent<Animation>();
+        _color!.a = 0.25f;
     }
 
     void Update()
     {
-        TextCountItem.text = Count.ToString();
-        if (Count <= 0 && !IsHighlight)
+        textCountItem.text = Count.ToString();
+        if (Count <= 0 && !isHighlight)
             ChangeColorAndSprite();
-        else if (IsHighlight && Data == null) Img1.color = color;
+        else if (isHighlight && Data == null) Img1.color = _color;
+        if (Data.IsAnimate && Data == null)
+        {
+            _animator.enabled = true;
+            _animator.clip = Data.Animate;
+            _animator.playAutomatically = true;
+        }
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (!CanDropped) return;
+        if (!canDropped) return;
         var dropped = eventData.pointerDrag;
         var draggableItem = dropped.GetComponent<DraggableItem>();
         if (!AcceptAll)
@@ -73,13 +83,14 @@ public class DefaultSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
         if (_draggableItem.Datadrag == null) return;
 
+
         if (Data == _draggableItem.Datadrag && transform != _draggableItem.Parent)
         {
             Count += _draggableItem.CountDrag;
             _draggableItem.Parent.GetComponent<DefaultSlot>().Data = null;
             _draggableItem.Parent.GetComponent<DefaultSlot>().Count = 0;
             ChangeColorAndSprite();
-            TextCountItem.text = Count.ToString();
+            textCountItem.text = Count.ToString();
             _draggableItem.Parent.GetComponent<DefaultSlot>().ChangeColorAndSprite();
         }
         else if (transform == _draggableItem.Parent)
@@ -90,8 +101,14 @@ public class DefaultSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
             GiveDataToOtherParent(_draggableItem);
             Data = _draggableItem.Datadrag;
             Count = _draggableItem.CountDrag;
-            TextCountItem.text = Count.ToString();
+            textCountItem.text = Count.ToString();
             ChangeColorAndSprite();
+        }
+
+        if (Data.IsAnimate)
+        {
+            _animator.enabled = true;
+            _animator.clip = Data.Animate;
         }
     }
 
@@ -106,13 +123,13 @@ public class DefaultSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
         if (Data == null)
         {
-            Img.sprite = null;
-            Img.color = Color.clear;
+            img.sprite = null;
+            img.color = Color.clear;
         }
         else
         {
-            Img.sprite = Data.sprite;
-            Img.color = Color.white;
+            img.sprite = Data.Sprite;
+            img.color = Color.white;
         }
     }
 

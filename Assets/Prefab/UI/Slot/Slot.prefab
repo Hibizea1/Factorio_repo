@@ -229,11 +229,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Data: {fileID: 0}
   Count: 0
-  TextCountItem: {fileID: 3616469811500005753}
-  Img: {fileID: 3433405943069820602}
-  CanDropped: 1
+  textCountItem: {fileID: 3616469811500005753}
+  img: {fileID: 3433405943069820602}
+  canDropped: 1
   AcceptAll: 1
-  IsHighlight: 0
+  isHighlight: 0
   ItemAccepted: {fileID: 0}
   CountNeeded: 0
 --- !u!114 &6009940388478069916
@@ -262,6 +262,7 @@ GameObject:
   - component: {fileID: 859988021678236156}
   - component: {fileID: 3433405943069820602}
   - component: {fileID: 8700913356053305280}
+  - component: {fileID: 3524739485689439783}
   m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
@@ -339,3 +340,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Image: {fileID: 3433405943069820602}
+--- !u!111 &3524739485689439783
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8978561108361923044}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_UpdateMode: 0
+  m_CullingType: 0

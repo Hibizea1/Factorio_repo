@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: I_Blue Potion
   m_EditorClassIdentifier: 
   ID: 5
-  description: Blue Potion (basic resource research)
-  nameItem: Blue Potion
-  sprite: {fileID: 21300000, guid: 6ee03ffaff7d63d40b05fb4105287b45, type: 3}
+  Description: 
+  NameItem: Blue Potion
+  Sprite: {fileID: 21300000, guid: 6ee03ffaff7d63d40b05fb4105287b45, type: 3}
   Type: 1
+  IsAnimate: 1
+  Animate: {fileID: 7400000, guid: 86c00ec531a3a8a4893ee240cc67df19, type: 2}
   durability: 0
   type: 2

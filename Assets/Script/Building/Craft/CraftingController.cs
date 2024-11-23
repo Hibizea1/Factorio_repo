@@ -1,7 +1,11 @@
+#region
+
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
+#endregion
 
 public class CraftingController : Controller
 {
@@ -64,7 +68,7 @@ public class CraftingController : Controller
             btn.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text =
                 CrafterDataManager.SInstance.Crafts[i].result.name;
             btn.transform.GetChild(1).GetComponent<Image>().sprite =
-                CrafterDataManager.SInstance.Crafts[i].result.sprite;
+                CrafterDataManager.SInstance.Crafts[i].result.Sprite;
             btn.transform.GetChild(1).GetComponent<Image>().preserveAspect = true;
             btn.GetComponent<SpawnRequireSlots>().RequireSlot1 = CrafterDataManager.SInstance.Crafts[i];
             btn.GetComponent<SpawnRequireSlots>().CraftingController = this;
@@ -80,7 +84,7 @@ public class CraftingController : Controller
             if (SelectedCraft.countPerRaquires[i] > defaultSlot[i].Count)
                 return;
 
-        resultCrafting.Img1.sprite = SelectedCraft.result.sprite;
+        resultCrafting.Img1.sprite = SelectedCraft.result.Sprite;
         resultCrafting.Data = SelectedCraft.result;
         resultCrafting.Count++;
         resultCrafting.Img1.color = Color.white;

@@ -1,6 +1,10 @@
+#region
+
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+
+#endregion
 
 public class DrillerBehaviour : Controller
 {
@@ -79,7 +83,7 @@ public class DrillerBehaviour : Controller
 
                 inventoryMiner.Count++;
                 inventoryMiner.Data = _p.ScriptableObject;
-                inventoryMiner.Img1.sprite = _p.ScriptableObject.sprite;
+                inventoryMiner.Img1.sprite = _p.ScriptableObject.Sprite;
                 inventoryMiner.Img1.color = Color.white;
                 Debug.Log("Is Mined by Drill !");
                 mine = StartCoroutine(Mine());

@@ -1,8 +1,12 @@
+#region
+
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+
+#endregion
 
 public class Inventory : MonoBehaviour
 {
@@ -76,8 +80,6 @@ public class Inventory : MonoBehaviour
         RefreshContent();
     }
 
-    //Fonction optionnelle
-    //Utilisation de cette fonction pour forcer la fermeture de l inventaire si besoin suivant une action.
     public void CloseInventory()
     {
         inventoryPanel?.SetActive(false);
@@ -93,7 +95,7 @@ public class Inventory : MonoBehaviour
 
             if (items[i].Count >= 1)
             {
-                img.sprite = items[i].Data.sprite;
+                img.sprite = items[i].Data.Sprite;
                 img.color = Color.white;
             }
             else if (items[i].Count <= 0)

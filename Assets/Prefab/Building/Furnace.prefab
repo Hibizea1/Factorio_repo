@@ -293,7 +293,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanAcceptItem: 1
-  HeatResistance: 150
-  FurnaceSpeed: 1
-  EndTimer: 10
+  heatResistance: 0
+  furnaceSpeed: 1
+  endTimer: 5
   selectedCraft: {fileID: 0}

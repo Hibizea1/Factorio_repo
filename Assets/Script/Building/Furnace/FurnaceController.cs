@@ -24,6 +24,7 @@ namespace Script.Building.Furnace
         TextMeshProUGUI _heatResistanceText;
         TextMeshProUGUI _heatSpeedText;
         DefaultSlot _ingredientSlot;
+        bool _isCrafting;
         FurnacePanelInfo _panelInfo;
         DefaultSlot _resultSlot;
         float _timer;
@@ -53,8 +54,11 @@ namespace Script.Building.Furnace
 
         void Update()
         {
-            FurnaceHeating();
             GetCraft();
+
+            if (_ingredientSlot.Data != null) FurnaceHeating();
+
+            if (_ingredientSlot.Data == null && _isCrafting) _timerSlider.value = 0;
         }
 
         public override ItemData GetItemData()
@@ -101,24 +105,23 @@ namespace Script.Building.Furnace
         {
             if (selectedCraft == null || _ingredientSlot.Count == 0) return;
 
-            if (_ingredientSlot.Data == selectedCraft.InputItem)
+            _isCrafting = true;
+            if (_timer <= endTimer)
             {
-                if (_timer <= endTimer)
-                {
-                    _heatSpeedText.text = Mathf.Round(furnaceSpeed).ToString();
-                    _timer += furnaceSpeed * Time.deltaTime;
-                    _timerSlider.value = _timer;
-                }
-                else
-                {
-                    _resultSlot.SetItemForCraft(selectedCraft.OutputItem, 1);
-                    _ingredientSlot.Count -= 1;
-                    Debug.Log("Crafted");
-                    _timer = 0;
-                    _timerSlider.value = _timer;
-                    if (_ingredientSlot.Count <= 0) _ingredientSlot.Data = null;
-                }
+                _heatSpeedText.text = Mathf.Round(furnaceSpeed).ToString();
+                _timer += furnaceSpeed * Time.deltaTime;
+                _timerSlider.value = _timer;
             }
+            else
+            {
+                _resultSlot.SetItemForCraft(selectedCraft.OutputItem, 1);
+                _ingredientSlot.Count -= 1;
+                Debug.Log("Crafted");
+                _timer = 0;
+                _timerSlider.value = _timer;
+                if (_ingredientSlot.Count <= 0) _ingredientSlot.Data = null;
+            }
+
         }
     }
 }
