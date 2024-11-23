@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,10 +6,11 @@ public class Character_Interaction : MonoBehaviour
 {
     [SerializeField] private float range;
 
-    public void OpenEquipment(InputAction.CallbackContext context)
+    public void OpenBuild(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
+            CheckCollision();
         }
     }
 
@@ -20,10 +22,11 @@ public class Character_Interaction : MonoBehaviour
             Vector3.Distance(_mouseCollision.gameObject.transform.position, transform.position) <= range &&
             _mouseCollision.CompareTag("Build"))
         {
-            if (_mouseCollision.gameObject.TryGetComponent<Build_Ui>(out Build_Ui _b))
+            if (_mouseCollision.gameObject.TryGetComponent<BuildUi>(out BuildUi _b))
             {
                 _b.OpenUI();
             }
         }
     }
+
 }

@@ -1,53 +1,84 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
-
     [SerializeField] private List<DefaultSlot> items = new List<DefaultSlot>();
     [SerializeField] private GameObject inventoryPanel; // root inventory panel
+
+    public GameObject InventoryPanel => inventoryPanel;
+
     const int inventorySize = 9;
     [SerializeField] GameObject content;
 
+    
+    public static Inventory SInstance { get; private set; }
+    private void Awake()
+    {
+        if (SInstance == null)
+        {
+            SInstance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
+
     private void Start()
     {
-        for (int i = 0; i < content.transform.childCount; i++) 
+        for (int i = 0; i < content.transform.childCount; i++)
         {
             items.Add(content.transform.GetChild(i).GetComponent<DefaultSlot>());
         }
+
         RefreshContent();
     }
 
     public void AddItem(ItemData item, int count = 1)
     {
-        var slot = items.Where(x => x.data == item).ToList();
+        var slot = items.Where(x => x.Data == item).ToList();
 
         if (slot.Any())
         {
-            slot[0].count += count;
+            slot[0].Data = item;
+            slot[0].Count += count;
+            RefreshContent();
         }
         else
         {
-            if (items.Count < inventorySize)
-                items.Add(new(item, count));
+            var emptySlot = items.FirstOrDefault(x => x.Data == null);
+            if (emptySlot != null)
+            {
+                emptySlot.Data = item;
+                emptySlot.Count = count;
+                RefreshContent();
+            }
         }
+
 
         RefreshContent();
     }
+
+   
+
+
     public void RemoveItem(ItemData item, int count)
     {
-        var slot = items.Where(x => x.data == item).ToList();
+        var slot = items.Where(x => x.Data == item).ToList();
 
         if (slot.Any())
         {
-            slot[0].count -= count;
+            slot[0].Count -= count;
 
-            if (slot[0].count <= 0)
+            if (slot[0].Count <= 0)
             {
+                slot[0].SetItemForInventory(null, 0);
                 items.Remove(slot[0]);
-                slot[0].SetItem(null);
             }
         }
 
@@ -59,25 +90,26 @@ public class Inventory : MonoBehaviour
     public void CloseInventory()
     {
         inventoryPanel?.SetActive(false);
-
     }
 
     public void RefreshContent()
     {
         for (int i = 0; i < items.Count; i++)
         {
-            if(items[i].data == null) return;
+            if (items[i].Data == null) return;
 
-            Image img = items[i].transform.GetChild(0).GetComponent<Image>();
+            Image img = items[i].transform.GetChild(1).GetComponent<Image>();
 
-            if (items[i].count >= 1)
+            if (items[i].Count >= 1)
             {
-                img.sprite = items[i].data.sprite;
+                img.sprite = items[i].Data.sprite;
+                img.color = Color.white;
             }
-            else if (items[i].count <= 0)
+            else if (items[i].Count <= 0)
             {
                 img.sprite = null;
-                items[i].data = null;
+                img.color = Color.clear;
+                items[i].Data = null;
             }
         }
     }
@@ -86,6 +118,7 @@ public class Inventory : MonoBehaviour
     {
         return inventorySize == items.Count;
     }
+
     public void ShowInventory()
     {
         gameObject.SetActive(true);
@@ -95,4 +128,19 @@ public class Inventory : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+    public bool ContentItem(ItemData data, int count)
+    {
+        foreach (DefaultSlot item in items) 
+        {
+            if (item.Data == data && item.Count >= count) return true;
+        }
+        return false;
+    }
+    
+    public void OpenAndCloseInventory(InputAction.CallbackContext context) 
+    {
+        inventoryPanel.SetActive(!inventoryPanel.activeSelf);
+    }
 }
+

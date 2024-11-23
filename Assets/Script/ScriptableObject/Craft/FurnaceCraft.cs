@@ -1,11 +1,13 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "FurnaceCraft", menuName = "Scriptable Objects/FurnaceCraft")]
 public class FurnaceCraft : ScriptableObject
 {
     [SerializeField] public string Name;
-    [SerializeField] private ItemData Item1;
-    [SerializeField] private ItemData Item2;
+    [SerializeField] public ItemData InputItem;
+    [FormerlySerializedAs("Item2")] [SerializeField] public ItemData OutputItem;
+    [SerializeField] public int RequiresHeat;
     
-    public Sprite Item2Sprite => Item2 != null ? Item2.sprite : null;
+    public Sprite Item2Sprite => OutputItem != null ? OutputItem.sprite : null;
 }
